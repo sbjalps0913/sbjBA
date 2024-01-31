@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+	
+{% block title %}ログイン{% endblock %}
+
+{% block main %}
+	<form action="{% url 'ba:login' %}" method="post">
+	{% csrf_token %}
+	<div class="container mt-5">
+    	<h2>ログイン</h2>
+      	{% csrf_token %}
+      	{{ form.as_p }}
+      	<button type="submit" class="btn btn-primary">ログイン</button>
+      	
+      	<br><br>
+      	<p style="color: black;">はじめて利用する方↓</p>
+      	<a href="{% url 'ba:register' %}">新規登録</a>
+      	
+      	<br><br><br>
+      	<p><a href="{% url 'ba:home' %}">パスワードを忘れた方はこちら</a></p>
+  	</div>
+  	</form>
+  	
+{% endblock %}
