@@ -6,20 +6,38 @@ from django.dispatch import receiver
 
 # Create your models here.
 
+# 問題集
+class QuestionSet(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()    # 問題集の説明
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)     # 問題を作成したユーザ
+    created_at = models.DateTimeField(auto_now_add=True)    # 問題集の作成日時
+
+    def __str__(self):
+        return self.title
+
+# 個々の問題を表すモデル
 class Question(models.Model):
-    question_text = models.CharField(max_length=255)
-    # 他にも必要なフィールドを追加
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)     # 属する問題集
+    text = models.TextField()
+    explanation = models.TextField(blank=True, null=True)       # 解説
+    
+    def __str__(self):
+        return self.text
 
-
+# 選択肢
 class Option(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    option_text = models.CharField(max_length=100)
-    is_correct = models.BooleanField(default=False)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)    # 属する問題
+    text = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)     # 正解か否か
+    
+    def __str__(self):
+        return self.text
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
-    is_master = models.BooleanField(default=False)
+    is_manager = models.BooleanField(default=False)
     
     def __str__(self):
         return self.user.username

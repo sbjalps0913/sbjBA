@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from .models import QuestionSet
+
 class RegisterForm(UserCreationForm):
     class Meta:
         model = User
@@ -9,3 +11,10 @@ class RegisterForm(UserCreationForm):
 
     def clean_username(self):
         return self.cleaned_data['username']
+    
+
+# 問題集作成フォーム
+class CreateQuestionSetForm(forms.ModelForm):
+    class Meta:
+        model = QuestionSet
+        fields = ['title', 'description']

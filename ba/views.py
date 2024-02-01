@@ -4,13 +4,14 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.views import View
+from django.views.generic.list import ListView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic.edit import CreateView, FormView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import UserProfile
-from .forms import RegisterForm
+from .models import UserProfile, QuestionSet
+from .forms import RegisterForm, CreateQuestionSetForm
 
 # Create your views here.
 
@@ -66,7 +67,7 @@ class HomeView(LoginRequiredMixin, View):
         return redirect('ba:logout')
 
 
-# 管理者用ログイン画面
+# 【管理者】ログイン画面
 class LoginManagerView(LoginView):
     template_name = 'ba/ba_manager_login.html'
     
@@ -76,7 +77,7 @@ class LoginManagerView(LoginView):
         user = form.get_user()
 
         # ユーザーが存在し、かつ is_master が True の場合にログイン
-        if user and user.userprofile.is_master:
+        if user and user.userprofile.is_manager:
             login(self.request, user)
             return HttpResponseRedirect(self.get_success_url())
         else:
@@ -90,13 +91,53 @@ class LoginManagerView(LoginView):
 
 
 
-# 管理者用ホーム画面
+# 【管理者】ホーム画面
 class HomeManagerView(LoginRequiredMixin, View):
     template_name = 'ba/ba_manager_home.html'
     login_url = '/ba/login_manager/'  # ログインしていない場合のリダイレクト先
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
+    
+
+# 【管理者】問題集作成画面
+class CreateQuestionSetView(LoginRequiredMixin, CreateView):
+    template_name = 'ba/ba_manager_create_QuestionSet.html'
+    form_class = CreateQuestionSetForm
+    success_url = reverse_lazy('ba:question_set_list')
+    login_url = '/ba/login_manager/'
+
+    def form_valid(self, form):
+        # ログインユーザーが管理者かどうかのチェック
+        if not self.request.user.userprofile.is_manager:
+            return self.handle_no_permission()
+
+        # ログインユーザーを問題集の作成者に設定
+        form.instance.created_by = self.request.user
+        form.instance.save()
+        
+        return super().form_valid(form)
+
+
+# 問題集一覧画面
+class QuestionSetListView(LoginRequiredMixin, ListView):
+    template_name = 'ba/ba_manager_questionlist.html'
+    model = QuestionSet
+    context_object_name = 'question_sets'
+    login_url = '/ba/login_manager/'
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     
     

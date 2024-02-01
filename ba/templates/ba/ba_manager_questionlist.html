@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} 問題集一覧 {% endblock %}
+
+{% block main %}
+  	<div class="container mt-5">
+    	<h2>問題集一覧</h2>
+	    <ul>
+	        {% for question_set in question_sets %}
+	            <li>{{ question_set.title }} - Created by {{ question_set.created_by.username }} at {{ question_set.created_at }}</li>
+	        {% endfor %}
+	    </ul>
+	    
+	    <a href="{% url 'ba:home_manager' %}">管理者ホームへ戻る</a>
+  	</div>
+{% endblock %}
