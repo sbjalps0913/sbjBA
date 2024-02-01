@@ -20,7 +20,7 @@ class QuestionSet(models.Model):
 class Question(models.Model):
     question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)     # 属する問題集
     text = models.TextField()
-    explanation = models.TextField(blank=True, null=True)       # 解説
+    explanation = models.TextField(blank=True, null=True)   # 解説
     
     def __str__(self):
         return self.text

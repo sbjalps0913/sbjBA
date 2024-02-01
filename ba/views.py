@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -10,8 +10,8 @@ from django.views.generic.edit import CreateView, FormView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import UserProfile, QuestionSet
-from .forms import RegisterForm, CreateQuestionSetForm
+from .models import UserProfile, QuestionSet, Question
+from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm
 
 # Create your views here.
 
@@ -117,13 +117,46 @@ class CreateQuestionSetView(LoginRequiredMixin, CreateView):
         form.instance.save()
         
         return super().form_valid(form)
+    
+    
+# 【管理者】問題作成画面
+class CreateQuestionView(LoginRequiredMixin, CreateView):
+    model = Question
+    template_name = 'ba/ba_manager_create_Question.html'
+    form_class = CreateQuestionForm
+    login_url = '/ba/login_manager/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        question_set_id = self.kwargs['pk']
+        question_set = get_object_or_404(QuestionSet, id=question_set_id)
+        context['question_set'] = question_set
+        return context
+
+    def form_valid(self, form):
+        question_set_id = self.kwargs['pk']
+        question_set = get_object_or_404(QuestionSet, id=question_set_id)
+        form.instance.question_set = question_set
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        question_set_id = self.kwargs['pk']
+        return reverse('ba:question_set_detail', kwargs={'pk': question_set_id})
 
 
-# 問題集一覧画面
+# 【管理者】問題集一覧画面
 class QuestionSetListView(LoginRequiredMixin, ListView):
     template_name = 'ba/ba_manager_questionlist.html'
     model = QuestionSet
     context_object_name = 'question_sets'
+    login_url = '/ba/login_manager/'
+    
+    
+# 【管理者】問題集詳細画面
+class QuestionSetDetailView(LoginRequiredMixin, DetailView):
+    model = QuestionSet
+    template_name = 'ba/ba_manager_QuestionSet_detail.html'
+    context_object_name = 'question_set'
     login_url = '/ba/login_manager/'
 
 
