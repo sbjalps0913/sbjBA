@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import StartView, LoginView, LogoutView, HomeView, RegisterView
-from .views import QuestionSetDetailView, CreateQuestionView, LoginManagerView, HomeManagerView, CreateQuestionSetView, QuestionSetListView
+from .views import UpdateQuestionSetView, QuestionDetailView, QuestionSetDetailView, CreateQuestionView, LoginManagerView, HomeManagerView, CreateQuestionSetView, QuestionSetListView
 
 
 app_name = 'ba'
@@ -18,6 +18,9 @@ urlpatterns = [
     path('create_question_set/', CreateQuestionSetView.as_view(), name='create_question_set'),
     path('question_set_list/', QuestionSetListView.as_view(), name='question_set_list'),
     path('question_set_detail/<int:pk>/', QuestionSetDetailView.as_view(), name='question_set_detail'),
+    path('question_detail/<int:pk>/', QuestionDetailView.as_view(), name='question_detail'),
     path('question_set/<int:pk>/create_question/', CreateQuestionView.as_view(), name='create_question'),
+    path('question_set/<int:pk>/update/', UpdateQuestionSetView.as_view(), name='update_question_set'),
+    
     
 ]

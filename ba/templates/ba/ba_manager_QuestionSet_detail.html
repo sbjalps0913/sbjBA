@@ -12,12 +12,17 @@
 	{% if question_set.question_set.all %}
 		<ul>
 	   		{% for question in question_set.question_set.all %}
-	     		<li>{{ question.text }}</li>
+	     		<li>
+	          		<a href="{% url 'ba:question_detail' pk=question.id %}">
+			       		{{ question.text }}
+			       	</a>
+			   	</li>
 	     	{% endfor %}
 	  	</ul>	
 	{% else %}
 	   	<p>No questions available in this set.</p>
 	{% endif %}
 	
+	<a href="{% url 'ba:update_question_set' question_set.pk %}">名前を変更する</a>
 	<a href="{% url 'ba:create_question' question_set.pk %}">Add a Question</a>
 {% endblock %}

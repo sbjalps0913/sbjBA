@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} 問題集更新 {% endblock %}
+
+{% block main %}
+  	<div class="container mt-5">
+	    <h2>問題集更新</h2>
+	    <form method="post" action="{% url 'ba:update_question_set' question_set.pk %}">
+	      	{% csrf_token %}
+	      	{{ form.as_p }}
+	      	<button type="submit">更新</button>
+	    </form>
+	    <a href="{% url 'ba:question_set_detail' question_set.pk %}">Cancel</a>
+  	</div>
+{% endblock %}

@@ -39,6 +39,15 @@ class CreateQuestionForm(forms.ModelForm):
     option4 = OptionForm(prefix='option4')
         
 
+# 問題集更新
+class UpdateQuestionSetForm(forms.ModelForm):
+    class Meta:
+        model = QuestionSet
+        fields = ['title', 'description']        
+        
+        
+
+
 
         
         

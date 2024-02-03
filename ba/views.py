@@ -6,12 +6,12 @@ from django.http import HttpResponseRedirect
 from django.views import View
 from django.views.generic.list import ListView
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic.edit import CreateView, FormView
+from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import UserProfile, QuestionSet, Question
-from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm
+from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm
 
 # Create your views here.
 
@@ -188,10 +188,11 @@ class QuestionSetDetailView(LoginRequiredMixin, DetailView):
     
 
 # 【管理者】問題詳細画面
-class QuestionDetailView(DetailView):
+class QuestionDetailView(LoginRequiredMixin, DetailView):
     model = Question
-    template_name = 'ba/ba_manager_question_detail.html'
+    template_name = 'ba/ba_manager_Question_detail.html'
     context_object_name = 'question'
+    login_url = '/ba/login_manager/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -199,6 +200,34 @@ class QuestionDetailView(DetailView):
         options = question.option_set.all()
         context['options'] = options
         return context
+
+
+# 【管理者】
+class UpdateQuestionSetView(LoginRequiredMixin, UpdateView):
+    model = QuestionSet
+    template_name = 'ba/ba_manager_update_QuestionSet.html'
+    form_class = UpdateQuestionSetForm
+    login_url = '/ba/login_manager/'
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(QuestionSet, pk=pk)
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question_set'] = self.get_object()
+        return context
+    
+    
+    def get_success_url(self):
+        question_set_id = self.kwargs['pk']
+        return reverse('ba:question_set_detail', kwargs={'pk': question_set_id})
+
+
+
+
+
 
 
 
