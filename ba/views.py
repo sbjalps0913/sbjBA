@@ -11,7 +11,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import UserProfile, QuestionSet, Question
-from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm
+from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm
 
 # Create your views here.
 
@@ -131,12 +131,39 @@ class CreateQuestionView(LoginRequiredMixin, CreateView):
         question_set_id = self.kwargs['pk']
         question_set = get_object_or_404(QuestionSet, id=question_set_id)
         context['question_set'] = question_set
+        context['option1'] = OptionForm(prefix='option1')
+        context['option2'] = OptionForm(prefix='option2')
+        context['option3'] = OptionForm(prefix='option3')
+        context['option4'] = OptionForm(prefix='option4')
         return context
 
     def form_valid(self, form):
         question_set_id = self.kwargs['pk']
         question_set = get_object_or_404(QuestionSet, id=question_set_id)
         form.instance.question_set = question_set
+        
+        # 問題を保存
+        form.save()
+        
+        # 選択肢を保存
+        option1 = OptionForm(self.request.POST, prefix='option1')
+        option2 = OptionForm(self.request.POST, prefix='option2')
+        option3 = OptionForm(self.request.POST, prefix='option3')
+        option4 = OptionForm(self.request.POST, prefix='option4')
+
+        if option1.is_valid() and option2.is_valid() and option3.is_valid() and option4.is_valid():
+            option1.instance.question = form.instance
+            option1.save()
+
+            option2.instance.question = form.instance
+            option2.save()
+
+            option3.instance.question = form.instance
+            option3.save()
+
+            option4.instance.question = form.instance
+            option4.save()
+        
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -158,6 +185,20 @@ class QuestionSetDetailView(LoginRequiredMixin, DetailView):
     template_name = 'ba/ba_manager_QuestionSet_detail.html'
     context_object_name = 'question_set'
     login_url = '/ba/login_manager/'
+    
+
+# 【管理者】問題詳細画面
+class QuestionDetailView(DetailView):
+    model = Question
+    template_name = 'ba/ba_manager_question_detail.html'
+    context_object_name = 'question'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        question = self.get_object()
+        options = question.option_set.all()
+        context['options'] = options
+        return context
 
 
 

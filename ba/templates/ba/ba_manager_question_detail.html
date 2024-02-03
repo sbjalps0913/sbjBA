@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %} 問題詳細 {% endblock %}
+
+{% block main %}
+  	<div class="container mt-5">
+	    <h2>問題詳細</h2>
+	    <p><strong>問題文:</strong> {{ question.text }}</p>
+	    
+	    <h3>選択肢</h3>
+	    <ul>
+	      	{% for option in options %}
+	        	<li>{{ option.text }} {% if option.is_correct %}(正解){% endif %}</li>
+	      	{% endfor %}
+	    </ul>
+	
+	    <a href="{% url 'ba:question_set_detail' pk=question.question_set.id %}">戻る</a>
+  	</div>
+{% endblock %}
