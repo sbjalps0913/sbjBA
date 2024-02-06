@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import QuestionSet, Question, Option
+from .models import QuestionSet, Question, Option, Bean
 
 class RegisterForm(UserCreationForm):
     class Meta:
@@ -59,6 +59,12 @@ class UpdateOptionForm(forms.ModelForm):
         model = Option
         fields = ['text', 'is_correct']
 
+
+# コーヒー豆追加
+class CreateBeanForm(forms.ModelForm):
+    class Meta:
+        model = Bean
+        fields = '__all__'
 
 
         

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import StartView, LoginView, LogoutView, HomeView, RegisterView
 from .views import DeleteQuestionSetView, DeleteQuestionView, UpdateOptionView, UpdateQuestionView, UpdateQuestionSetView, QuestionDetailView, QuestionSetDetailView, CreateQuestionView, LoginManagerView, HomeManagerView, CreateQuestionSetView, QuestionSetListView
-from .views import ManagerBeanListView
+from .views import ManagerBeanListView, CreateBeanView
 
 
 app_name = 'ba'
@@ -31,5 +31,6 @@ urlpatterns = [
     path('question_set/<int:pk>/delete/', DeleteQuestionSetView.as_view(), name='delete_question_set'),
 
     path('bean/list/', ManagerBeanListView.as_view(), name='bean_list'),
+    path('bean/create/', CreateBeanView.as_view(), name='create_bean'),
     
 ]

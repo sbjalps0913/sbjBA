@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import UserProfile, QuestionSet, Question, Option, Bean
-from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm
+from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm, CreateBeanForm
 
 # Create your views here.
 
@@ -287,6 +287,22 @@ class ManagerBeanListView(LoginRequiredMixin, ListView):
     template_name = 'ba/ba_manager_bean_list.html'
     context_object_name = 'beans'
     login_url = '/ba/login_manager/'
+    
+
+# 【管理者】コーヒー豆追加画面
+class CreateBeanView(LoginRequiredMixin, CreateView):
+    model = Bean
+    form_class = CreateBeanForm
+    template_name = 'ba/ba_manager_create_Bean.html'
+    success_url = reverse_lazy('ba:bean_list')
+    login_url = '/ba/login_manager/'
+    
+    def form_valid(self, form):
+        # フォームのデータを受け取り、コーヒー豆を作成する
+        bean = form.save(commit=False)  # まだ保存はしない
+        # form.cleaned_data を使って追加の処理が可能
+        bean.save()  # ここで保存する
+        return super().form_valid(form)
 
 
 

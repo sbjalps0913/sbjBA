@@ -14,5 +14,9 @@
 		{% else %}
 			<p>コーヒー豆の情報はありません</p>
 		{% endif %}
+		<br><br>
+		<a href="{% url 'ba:create_bean' %}" class="btn btn-outline-success">コーヒーを追加</a>
+		<br><br>
+		<a href="{% url 'ba:home_manager' %}" class="btn btn-secondary">管理者ホームへ戻る</a>
 	</div>
 {% endblock %}
