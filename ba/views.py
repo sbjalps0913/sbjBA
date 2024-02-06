@@ -257,10 +257,19 @@ class UpdateOptionView(LoginRequiredMixin, UpdateView):
         return context
 
 
+# 【管理者】問題集削除画面
+class DeleteQuestionSetView(LoginRequiredMixin, DeleteView):
+    model = QuestionSet
+    success_url = reverse_lazy('ba:question_set_list')
+    template_name = 'ba/ba_manager_delete_QuestionSet.html'
+    login_url = '/ba/login_manager/'
+
+
 # 【管理者】問題削除画面
-class DeleteQuestionView(DeleteView):
+class DeleteQuestionView(LoginRequiredMixin, DeleteView):
     model = Question
     template_name = 'ba/ba_manager_delete_Question.html'
+    login_url = '/ba/login_manager/'
 
     def get_queryset(self):
         queryset = super().get_queryset()

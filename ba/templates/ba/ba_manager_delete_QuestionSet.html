@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} 削除確認[問題集] {% endblock %}
+
+{% block main %}
+    <div class="container mt-5">
+        <h2>問題集の削除</h2>
+        <p>以下の問題集を削除してもよろしいですか？</p>
+        <p><strong>問題集タイトル:</strong> {{ object.title }}</p>
+        <p><strong>説明:</strong> {{ object.description }}</p>
+        <p><strong>作成者:</strong> {{ object.created_by.username }}</p>
+        <p><strong>作成日:</strong> {{ object.created_at }}</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">削除</button>
+            <a href="{% url 'ba:question_set_detail' pk=object.pk %}" class="btn btn-secondary">キャンセル</a>
+        </form>
+    </div>
+{% endblock %}

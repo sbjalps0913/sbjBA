@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import StartView, LoginView, LogoutView, HomeView, RegisterView
-from .views import DeleteQuestionView, UpdateOptionView, UpdateQuestionView, UpdateQuestionSetView, QuestionDetailView, QuestionSetDetailView, CreateQuestionView, LoginManagerView, HomeManagerView, CreateQuestionSetView, QuestionSetListView
+from .views import DeleteQuestionSetView, DeleteQuestionView, UpdateOptionView, UpdateQuestionView, UpdateQuestionSetView, QuestionDetailView, QuestionSetDetailView, CreateQuestionView, LoginManagerView, HomeManagerView, CreateQuestionSetView, QuestionSetListView
 
 
 app_name = 'ba'
@@ -27,5 +27,7 @@ urlpatterns = [
     path('option/<int:pk>/update/', UpdateOptionView.as_view(), name='update_option'),
     
     path('question/<int:pk>/delete/', DeleteQuestionView.as_view(), name='delete_question'),
+    path('question_set/<int:pk>/delete/', DeleteQuestionSetView.as_view(), name='delete_question_set'),
+
     
 ]

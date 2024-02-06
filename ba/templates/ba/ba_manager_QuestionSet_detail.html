@@ -24,12 +24,15 @@
 		   	<p>No questions available in this set.</p>
 		{% endif %}
 		
-		<a href="{% url 'ba:update_question_set' question_set.pk %}" class="btn btn-outline-info">問題集の情報を更新する</a>
+		<a href="{% url 'ba:create_question' question_set.pk %}" class="btn btn-outline-success">問題を作成する</a>
 		
 		<br><br>
-		<a href="{% url 'ba:create_question' question_set.pk %}" class="btn btn-outline-info">問題を作成する</a>
+		<a href="{% url 'ba:update_question_set' question_set.pk %}" class="btn btn-outline-info">問題集の情報を更新する</a>
+		<a href="{% url 'ba:delete_question_set' pk=question_set.pk %}" class="btn btn-outline-danger">この問題集を削除</a>
 		
 		<br><br>
 		<a href="{% url 'ba:question_set_list' %}" class="btn btn-secondary">戻る</a>
+		
+		<br><br>
 	</div>
 {% endblock %}
