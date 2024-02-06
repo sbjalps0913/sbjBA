@@ -44,7 +44,23 @@ class UpdateQuestionSetForm(forms.ModelForm):
     class Meta:
         model = QuestionSet
         fields = ['title', 'description']        
-        
+
+
+# 問題更新
+class UpdateQuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['text', 'explanation']
+
+
+# 選択肢更新
+class UpdateOptionForm(forms.ModelForm):
+    class Meta:
+        model = Option
+        fields = ['text', 'is_correct']
+
+
+
         
 
 

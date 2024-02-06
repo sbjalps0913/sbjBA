@@ -13,6 +13,8 @@
 	        	<li>{{ option.text }} {% if option.is_correct %}(正解){% endif %}</li>
 	      	{% endfor %}
 	    </ul>
+	    
+	    <a href="{% url 'ba:update_question' pk=question.pk %}">問題を編集する</a>
 	
 	    <a href="{% url 'ba:question_set_detail' pk=question.question_set.id %}">戻る</a>
   	</div>

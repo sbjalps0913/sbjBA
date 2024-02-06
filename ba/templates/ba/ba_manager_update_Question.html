@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %} 問題更新 {% endblock %}
+
+{% block main %}
+  	<div class="container mt-5">
+	    <h2>問題更新</h2>
+	    <form method="post" action="{% url 'ba:update_question' question.pk %}">
+	      	{% csrf_token %}
+	      	{{ form.as_p }}
+	      	<button type="submit">更新</button>
+	    </form>
+	
+	    <h2>選択肢更新</h2>
+	    <ol type ="1">
+		    {% for option in options %}
+		      	<form method="post" action="{% url 'ba:update_option' option.pk %}">
+			        {% csrf_token %}
+			        <li>
+			        	{{ option.text }}
+			        	<br>
+			        	<a href="{% url 'ba:update_option' pk=option.pk %}">編集する</a>
+			        	<br><br>
+			        </li>
+		      	</form>
+		    {% endfor %}
+	    </ol>
+	
+	    {# <a href="{% url 'ba:question_set_list' %}">キャンセル</a> #}
+	    <a href="{% url 'ba:question_detail' pk=question.id %}">戻る</a>
+  	</div>
+{% endblock %}

@@ -10,8 +10,8 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import UserProfile, QuestionSet, Question
-from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm
+from .models import UserProfile, QuestionSet, Question, Option
+from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm
 
 # Create your views here.
 
@@ -202,7 +202,7 @@ class QuestionDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-# 【管理者】
+# 【管理者】問題集更新画面
 class UpdateQuestionSetView(LoginRequiredMixin, UpdateView):
     model = QuestionSet
     template_name = 'ba/ba_manager_update_QuestionSet.html'
@@ -223,6 +223,63 @@ class UpdateQuestionSetView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         question_set_id = self.kwargs['pk']
         return reverse('ba:question_set_detail', kwargs={'pk': question_set_id})
+
+
+# 【管理者】問題更新画面
+class UpdateQuestionView(UpdateView):
+    model = Question
+    template_name = 'ba/ba_manager_update_Question.html'
+    form_class = UpdateQuestionForm
+    success_url = reverse_lazy('ba:question_set_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        question = self.get_object()
+        options = Option.objects.filter(question=question)
+        context['options'] = options
+        return context
+
+
+# 【管理者】選択肢更新画面
+class UpdateOptionView(UpdateView):
+    model = Option
+    template_name = 'ba/ba_manager_update_Option.html'
+    form_class = UpdateOptionForm
+    success_url = reverse_lazy('ba:question_set_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        options = self.get_object()
+        context['options'] = options
+        return context
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
