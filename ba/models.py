@@ -41,7 +41,7 @@ class UserProfile(models.Model):
     
     def __str__(self):
         return self.user.username
-    
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -51,3 +51,31 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.userprofile.save()
+    
+
+# コーヒー豆
+class Bean(models.Model):
+    name = models.CharField(max_length=100)
+    three_letters = models.CharField(max_length=3)
+    roast = models.IntegerField()  # ローストレベル
+    flavor = models.CharField(max_length=100)   # 風味
+    acidity = models.CharField(max_length=100)  # 酸味
+    body = models.CharField(max_length=100)     # コク
+    processing = models.CharField(max_length=100)   # 加工法
+    region = models.CharField(max_length=100)   # 地域
+    complementary = models.CharField(max_length=100)    # 相性の良い風味
+
+    def __str__(self):
+        return self.name    
+
+
+
+
+
+
+
+
+
+
+
+

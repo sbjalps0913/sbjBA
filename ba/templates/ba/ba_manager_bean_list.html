@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %} コーヒー豆一覧 {% endblock %}
+
+{% block main %}
+	<div class="container mt-5">
+	    <h2>コーヒー豆一覧</h2>
+	    {% if beans %}
+		    <ul>
+		        {% for bean in beans %}
+		        	<li>{{ bean.name }}</li>
+		        {% endfor %}
+		    </ul>
+		{% else %}
+			<p>コーヒー豆の情報はありません</p>
+		{% endif %}
+	</div>
+{% endblock %}

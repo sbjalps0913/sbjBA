@@ -3,11 +3,15 @@
 {% block title %} 問題集作成 {% endblock %}
 
 {% block main %}
-  	<h2>新しく問題集を作成する</h2>
-  	<form method="post" action="{% url 'ba:create_question_set' %}">
-    	{% csrf_token %}
-    	{{ form.as_p }}
-    	<button type="submit">問題集を作成</button>
-  	</form>
-  	<a href="{% url 'ba:home_manager' %}">管理者ホームへ戻る</a>
+	<div class="container mt-5">
+	  	<h2>新しく問題集を作成する</h2>
+	  	<form method="post" action="{% url 'ba:create_question_set' %}">
+	    	{% csrf_token %}
+	    	{{ form.as_p }}
+	    	<button type="submit" class="btn btn-outline-success">問題集を作成</button>
+	  	</form>
+	  	<br>
+	  	<a href="{% url 'ba:home_manager' %}" class="btn btn-secondary">管理者ホームへ戻る</a>
+	</div>
+	<br><br>
 {% endblock %}

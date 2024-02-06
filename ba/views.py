@@ -11,7 +11,7 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import UserProfile, QuestionSet, Question, Option
+from .models import UserProfile, QuestionSet, Question, Option, Bean
 from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm
 
 # Create your views here.
@@ -279,6 +279,15 @@ class DeleteQuestionView(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         # 問題削除後のリダイレクト先を設定
         return reverse_lazy('ba:question_set_detail', kwargs={'pk': self.object.question_set.id})
+
+
+# 【管理者】コーヒー豆一覧画面
+class ManagerBeanListView(LoginRequiredMixin, ListView):
+    model = Bean
+    template_name = 'ba/ba_manager_bean_list.html'
+    context_object_name = 'beans'
+    login_url = '/ba/login_manager/'
+
 
 
 

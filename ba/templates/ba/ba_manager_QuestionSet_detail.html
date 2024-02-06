@@ -11,7 +11,7 @@
 		
 		<h3>Questions</h3>
 		{% if question_set.question_set.all %}
-			<ul>
+			<ol>
 		   		{% for question in question_set.question_set.all %}
 		     		<li>
 		          		<a href="{% url 'ba:question_detail' pk=question.id %}">
@@ -19,7 +19,7 @@
 				       	</a>
 				   	</li>
 		     	{% endfor %}
-		  	</ul>	
+		  	</ol>	
 		{% else %}
 		   	<p>No questions available in this set.</p>
 		{% endif %}
