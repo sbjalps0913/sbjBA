@@ -8,8 +8,9 @@
 	    <form method="post" action="{% url 'ba:update_question_set' question_set.pk %}">
 	      	{% csrf_token %}
 	      	{{ form.as_p }}
-	      	<button type="submit">更新</button>
+	      	<button type="submit" class="btn btn-outline-success">問題集を更新する</button>
 	    </form>
-	    <a href="{% url 'ba:question_set_detail' question_set.pk %}">Cancel</a>
+	    <br>
+	    <a href="{% url 'ba:question_set_detail' question_set.pk %}" class="btn btn-secondary">戻る</a>
   	</div>
 {% endblock %}

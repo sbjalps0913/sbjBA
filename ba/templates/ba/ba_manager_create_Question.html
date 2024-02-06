@@ -3,18 +3,27 @@
 {% block title %} 問題の追加 {% endblock %}
 
 {% block main %}
-  	<h2>新しい問題を作成する</h2>
-  	<form method="post" action="{% url 'ba:create_question' question_set.pk %}">
-    	{% csrf_token %}
-    	{{ form.as_p }}
-    	
-    	<h3>選択肢:</h3>
-    	{{ option1.as_p }}
-    	{{ option2.as_p }}
-    	{{ option3.as_p }}
-    	{{ option4.as_p }}
-    	
-    	<button type="submit">作成する</button>
-  	</form>
-  	<a href="{% url 'ba:question_set_detail' question_set.pk %}">Cancel</a>
+	<div class="container mt-5">
+	  	<h2>新しい問題を作成する</h2>
+	  	<form method="post" action="{% url 'ba:create_question' question_set.pk %}">
+	    	{% csrf_token %}
+	    	{{ form.as_p }}
+	    	
+	    	<h3>選択肢:</h3>
+	    	{{ option1.as_p }}
+	    	{{ option2.as_p }}
+	    	{{ option3.as_p }}
+	    	{{ option4.as_p }}
+	    		
+	    	<button type="submit" class="btn btn-outline-success">問題を作成する</button>
+	    	
+	  	</form>
+	  	
+	  	<br><br>
+	  	<a href="{% url 'ba:question_set_detail' question_set.pk %}" class="btn btn-secondary">戻る</a>
+  	
+  	
+  	</div>
+  	
+  	<br>
 {% endblock %}

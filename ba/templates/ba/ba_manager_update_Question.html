@@ -8,9 +8,10 @@
 	    <form method="post" action="{% url 'ba:update_question' question.pk %}">
 	      	{% csrf_token %}
 	      	{{ form.as_p }}
-	      	<button type="submit">更新</button>
+	      	<button type="submit" class="btn btn-outline-success">問題を更新する</button>
 	    </form>
 	
+		<br><br>
 	    <h2>選択肢更新</h2>
 	    <ol type ="1">
 		    {% for option in options %}
@@ -19,7 +20,7 @@
 			        <li>
 			        	{{ option.text }}
 			        	<br>
-			        	<a href="{% url 'ba:update_option' pk=option.pk %}">編集する</a>
+			        	<a href="{% url 'ba:update_option' pk=option.pk %}" class="btn btn-outline-info">編集する</a>
 			        	<br><br>
 			        </li>
 		      	</form>
@@ -27,6 +28,6 @@
 	    </ol>
 	
 	    {# <a href="{% url 'ba:question_set_list' %}">キャンセル</a> #}
-	    <a href="{% url 'ba:question_detail' pk=question.id %}">戻る</a>
+	    <a href="{% url 'ba:question_detail' pk=question.id %}" class="btn btn-secondary">戻る</a>
   	</div>
 {% endblock %}

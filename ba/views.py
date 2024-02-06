@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.views import View
 from django.views.generic.list import ListView
 from django.contrib.auth.views import LoginView, LogoutView
+from django.views.generic import DeleteView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -226,11 +227,12 @@ class UpdateQuestionSetView(LoginRequiredMixin, UpdateView):
 
 
 # 【管理者】問題更新画面
-class UpdateQuestionView(UpdateView):
+class UpdateQuestionView(LoginRequiredMixin, UpdateView):
     model = Question
     template_name = 'ba/ba_manager_update_Question.html'
     form_class = UpdateQuestionForm
     success_url = reverse_lazy('ba:question_set_list')
+    login_url = '/ba/login_manager/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -241,17 +243,39 @@ class UpdateQuestionView(UpdateView):
 
 
 # 【管理者】選択肢更新画面
-class UpdateOptionView(UpdateView):
+class UpdateOptionView(LoginRequiredMixin, UpdateView):
     model = Option
     template_name = 'ba/ba_manager_update_Option.html'
     form_class = UpdateOptionForm
     success_url = reverse_lazy('ba:question_set_list')
+    login_url = '/ba/login_manager/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         options = self.get_object()
         context['options'] = options
         return context
+
+
+# 【管理者】問題削除画面
+class DeleteQuestionView(DeleteView):
+    model = Question
+    template_name = 'ba/ba_manager_delete_Question.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        #return queryset.filter(created_by=self.request.user)  # ログインユーザーが作成した問題のみ削除可能
+        return queryset
+
+    def get_success_url(self):
+        # 問題削除後のリダイレクト先を設定
+        return reverse_lazy('ba:question_set_detail', kwargs={'pk': self.object.question_set.id})
+
+
+
+
+
+
 
 
 

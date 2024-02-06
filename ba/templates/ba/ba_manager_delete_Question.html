@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %} 削除の確認[問題] {% endblock %}
+
+{% block main %}
+  	<div class="container mt-5">
+	    <h2>削除の確認</h2>
+	    <p>以下の問題を削除してもよろしいですか？</p>
+	    <p><strong>問題:</strong> {{ object.text }}</p>
+	    
+	    <p><strong>選択肢:</strong></p>
+	    <ul>
+	        {% for option in object.option_set.all %}
+	            <li>{{ option.text }} {% if option.is_correct %}(正解){% endif %}</li>
+	        {% endfor %}
+	    </ul>
+	    
+	    <form method="post">
+	      	{% csrf_token %}
+	      	<button type="submit" class="btn btn-danger">削除</button>
+	      	<a href="{% url 'ba:question_detail' pk=object.pk %}" class="btn btn-secondary">キャンセル</a>
+	    </form>
+  	</div>
+{% endblock %}

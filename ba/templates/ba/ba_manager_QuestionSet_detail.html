@@ -3,26 +3,33 @@
 {% block title %} 問題集詳細 {% endblock %}
 
 {% block main %}
-  	<h2>{{ question_set.title }}</h2>
-	<p>{{ question_set.description }}</p>
-	<p>Created by: {{ question_set.created_by.username }}</p>
-	<p>Created at: {{ question_set.created_at }}</p>
-	
-	<h3>Questions</h3>
-	{% if question_set.question_set.all %}
-		<ul>
-	   		{% for question in question_set.question_set.all %}
-	     		<li>
-	          		<a href="{% url 'ba:question_detail' pk=question.id %}">
-			       		{{ question.text }}
-			       	</a>
-			   	</li>
-	     	{% endfor %}
-	  	</ul>	
-	{% else %}
-	   	<p>No questions available in this set.</p>
-	{% endif %}
-	
-	<a href="{% url 'ba:update_question_set' question_set.pk %}">名前を変更する</a>
-	<a href="{% url 'ba:create_question' question_set.pk %}">Add a Question</a>
+	<div class="container mt-5">
+	  	<h2>{{ question_set.title }}</h2>
+		<p>{{ question_set.description }}</p>
+		<p>Created by: {{ question_set.created_by.username }}</p>
+		<p>Created at: {{ question_set.created_at }}</p>
+		
+		<h3>Questions</h3>
+		{% if question_set.question_set.all %}
+			<ul>
+		   		{% for question in question_set.question_set.all %}
+		     		<li>
+		          		<a href="{% url 'ba:question_detail' pk=question.id %}">
+				       		{{ question.text }}
+				       	</a>
+				   	</li>
+		     	{% endfor %}
+		  	</ul>	
+		{% else %}
+		   	<p>No questions available in this set.</p>
+		{% endif %}
+		
+		<a href="{% url 'ba:update_question_set' question_set.pk %}" class="btn btn-outline-info">問題集の情報を更新する</a>
+		
+		<br><br>
+		<a href="{% url 'ba:create_question' question_set.pk %}" class="btn btn-outline-info">問題を作成する</a>
+		
+		<br><br>
+		<a href="{% url 'ba:question_set_list' %}" class="btn btn-secondary">戻る</a>
+	</div>
 {% endblock %}
