@@ -48,14 +48,9 @@
 
 		    <div class="form-group">
 		      	<label for="id_processing">加工法:</label><br>
-		      	<input type="checkbox" id="id_washed" name="processing" value="WASHED">
-		      	<label for="id_washed">WASHED</label><br>
-		      	<input type="checkbox" id="id_semi_washed" name="processing" value="SEMI-WASHED">
-		      	<label for="id_semi_washed">SEMI-WASHED</label><br>
-		      	<input type="checkbox" id="id_dried" name="processing" value="DRIED">
-		      	<label for="id_dried">DRIED</label><br>
-		      	<input type="checkbox" id="id_varies" name="processing" value="VARIES">
-		      	<label for="id_varies">VARIES</label>
+		      	{% for checkbox in form.processing %}
+                    {{ checkbox.tag }} 	{{ checkbox.choice_label }}<br> {# 加工法のチェックボックスを表示 #}
+                {% endfor %}
 		    </div>
 
 		    <div class="form-group">

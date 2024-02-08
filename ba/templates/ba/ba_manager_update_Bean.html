@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} コーヒー豆更新 {% endblock %}
+
+{% block main %}
+	<div class="container mt-5">
+	    <h2>コーヒー豆の情報を更新する</h2>
+	    <form method="post">
+	        {% csrf_token %}
+	        {{ form.as_p }}
+	        <button type="submit" class="btn btn-outline-success">更新する</button>
+	    </form>
+	
+	    <br><br>
+	    <a href="{% url 'ba:bean_detail' bean.pk %}" class="btn btn-secondary">コーヒー豆詳細に戻る</a>
+	</div>
+{% endblock %}

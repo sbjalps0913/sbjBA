@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import UserProfile, QuestionSet, Question, Option, Bean
-from .forms import RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm, CreateBeanForm
+from .forms import UpdateBeanForm, RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm, CreateBeanForm
 
 # Create your views here.
 
@@ -311,7 +311,28 @@ class BeanDetailView(LoginRequiredMixin, DetailView):
     template_name = 'ba/ba_manager_Bean_detail.html'
     context_object_name = 'bean'
     login_url = '/ba/login_manager/'
+    
+    
+# 【管理者】コーヒー豆更新画面
+class UpdateBeanView(UpdateView):
+    model = Bean
+    form_class = UpdateBeanForm
+    template_name = 'ba/ba_manager_update_Bean.html'
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['initial'] = {
+            'processing': [choice[0] for choice in UpdateBeanForm.PROCESSING_CHOICES if choice[0] in self.object.processing]
+        }
+        return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['bean'] = self.get_object()
+        return context    
+
+    def get_success_url(self):
+        return reverse_lazy('ba:bean_detail', kwargs={'pk': self.object.id})
 
 
 

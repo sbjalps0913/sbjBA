@@ -62,10 +62,68 @@ class UpdateOptionForm(forms.ModelForm):
 
 # コーヒー豆追加
 class CreateBeanForm(forms.ModelForm):
+    
+    PROCESSING_CHOICES = [
+        ('WASHED', 'WASHED'),
+        ('SEMI-WASHED', 'SEMI-WASHED'),
+        ('DRIED', 'DRIED'),
+        ('VARIES', 'VARIES'),
+    ]
+    
+    processing = forms.MultipleChoiceField(choices=PROCESSING_CHOICES,widget=forms.CheckboxSelectMultiple)
+    
     class Meta:
         model = Bean
         fields = '__all__'
+        
+    def clean_processing(self):
+        data = self.cleaned_data['processing']
+        return ','.join(data)
 
+
+# コーヒー豆更新
+class UpdateBeanForm(forms.ModelForm):
+    PROCESSING_CHOICES = [
+        ('WASHED', 'WASHED'),
+        ('SEMI-WASHED', 'SEMI-WASHED'),
+        ('DRIED', 'DRIED'),
+        ('VARIES', 'VARIES'),
+    ]
+    
+    ACIDITY_CHOICES = [
+        ('HIGH', 'HIGH'),
+        ('MEDIUM', 'MEDIUM'),
+        ('LOW', 'LOW'),
+    ]
+
+    BODY_CHOICES = [
+        ('LIGHT', 'LIGHT'),
+        ('MEDIUM', 'MEDIUM'),
+        ('FULL', 'FULL'),
+    ]
+
+    REGION_CHOICES = [
+        ('LATIN AMERICA', 'LATIN AMERICA'),
+        ('ASIA/PACIFIC', 'ASIA/PACIFIC'),
+        ('AFRICA', 'AFRICA'),
+        ('MULTI-REGION', 'MULTI-REGION'),
+    ]
+    
+    processing = forms.MultipleChoiceField(choices=PROCESSING_CHOICES, widget=forms.CheckboxSelectMultiple)
+    acidity = forms.ChoiceField(choices=ACIDITY_CHOICES, widget=forms.RadioSelect)
+    body = forms.ChoiceField(choices=BODY_CHOICES, widget=forms.RadioSelect)
+    region = forms.ChoiceField(choices=REGION_CHOICES, widget=forms.RadioSelect)
+
+    class Meta:
+        model = Bean
+        fields = ['name', 'three_letters', 'roast', 'flavor', 'acidity', 'body', 'processing', 'region', 'complementary']
+        widgets = {
+            'roast': forms.NumberInput(attrs={'min': 1, 'max': 6}),  # ローストレベルの範囲を指定
+        }
+    
+    def clean_processing(self):
+        data = self.cleaned_data['processing']
+        return ','.join(data)
 
         
 

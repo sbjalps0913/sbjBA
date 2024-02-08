@@ -4,8 +4,7 @@
 
 {% block main %}
     <div class="container mt-5">
-        <h2>コーヒー豆詳細</h2>
-        <p><strong>名前:</strong> {{ bean.name }}</p>
+        <h2>「{{ bean.name }}」の詳細</h2>
         <p><strong>スリーレター:</strong> {{ bean.three_letters }}</p>
         <p><strong>ローストレベル:</strong> {{ bean.roast }}</p>
         <p><strong>風味のキーワード:</strong> {{ bean.flavor }}</p>
@@ -15,7 +14,11 @@
         <p><strong>地域:</strong> {{ bean.region }}</p>
         <p><strong>相性の良い風味:</strong> {{ bean.complementary }}</p>
         
+        <br>
+        <a href="{% url 'ba:update_bean' bean.pk %}" class="btn btn-outline-info">コーヒー豆の情報を更新する</a>
+        
         <br><br>
         <a href="{% url 'ba:bean_list' %}" class="btn btn-secondary">コーヒー豆一覧へ戻る</a>
+    	<br><br>
     </div>
 {% endblock %}
