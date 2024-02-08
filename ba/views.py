@@ -305,6 +305,13 @@ class CreateBeanView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+# 【管理者】コーヒー豆詳細画面
+class BeanDetailView(LoginRequiredMixin, DetailView):
+    model = Bean
+    template_name = 'ba/ba_manager_Bean_detail.html'
+    context_object_name = 'bean'
+    login_url = '/ba/login_manager/'
+
 
 
 

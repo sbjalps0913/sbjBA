@@ -8,7 +8,7 @@
 	    {% if beans %}
 		    <ul>
 		        {% for bean in beans %}
-		        	<li>{{ bean.name }}</li>
+		        	<li><a href="{% url 'ba:bean_detail' bean.pk %}">{{ bean.name }}</a></li>
 		        {% endfor %}
 		    </ul>
 		{% else %}
