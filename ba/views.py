@@ -314,10 +314,11 @@ class BeanDetailView(LoginRequiredMixin, DetailView):
     
     
 # 【管理者】コーヒー豆更新画面
-class UpdateBeanView(UpdateView):
+class UpdateBeanView(LoginRequiredMixin, UpdateView):
     model = Bean
     form_class = UpdateBeanForm
     template_name = 'ba/ba_manager_update_Bean.html'
+    login_url = '/ba/login_manager/'
     
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -333,6 +334,14 @@ class UpdateBeanView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('ba:bean_detail', kwargs={'pk': self.object.id})
+
+
+# 【管理者】コーヒー豆削除画面
+class DeleteBeanView(LoginRequiredMixin, DeleteView):
+    model = Bean
+    template_name = 'ba/ba_manager_delete_Bean.html'
+    success_url = reverse_lazy('ba:bean_list')
+    login_url = '/ba/login_manager/'
 
 
 

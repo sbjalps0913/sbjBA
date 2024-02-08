@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %} 削除確認[コーヒー豆] {% endblock %}
+
+{% block main %}
+  	<div class="container mt-5">
+	    <h2>削除の確認</h2>
+	    <p>以下のコーヒー豆を削除してもよろしいですか？</p>
+	    <p><strong>名前:</strong> {{ bean.name }}</p>
+	    <p><strong>スリーレター:</strong> {{ bean.three_letters }}</p>
+	    <p><strong>風味のキーワード:</strong> {{ bean.flavor }}</p>
+        <p><strong>酸味:</strong> {{ bean.acidity }}</p>
+        <p><strong>コク:</strong> {{ bean.body }}</p>
+        <p><strong>加工法:</strong> {{ bean.processing }}</p>
+        <p><strong>地域:</strong> {{ bean.region }}</p>
+        <p><strong>相性の良い風味:</strong> {{ bean.complementary }}</p>
+	
+	    <form method="post">
+	      	{% csrf_token %}
+	      	<button type="submit" class="btn btn-danger">削除</button>
+	      	<a href="{% url 'ba:bean_detail' pk=bean.pk %}" class="btn btn-secondary">キャンセル</a>
+	    </form>
+  	</div>
+{% endblock %}

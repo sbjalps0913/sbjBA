@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import StartView, LoginView, LogoutView, HomeView, RegisterView
 from .views import DeleteQuestionSetView, DeleteQuestionView, UpdateOptionView, UpdateQuestionView, UpdateQuestionSetView, QuestionDetailView, QuestionSetDetailView, CreateQuestionView, LoginManagerView, HomeManagerView, CreateQuestionSetView, QuestionSetListView
-from .views import ManagerBeanListView, CreateBeanView, BeanDetailView, UpdateBeanView
+from .views import ManagerBeanListView, CreateBeanView, BeanDetailView, UpdateBeanView, DeleteBeanView
 
 
 app_name = 'ba'
@@ -34,6 +34,7 @@ urlpatterns = [
     path('bean/create/', CreateBeanView.as_view(), name='create_bean'),
     path('bean_detail/<int:pk>/', BeanDetailView.as_view(), name='bean_detail'),
     path('bean/<int:pk>/update/', UpdateBeanView.as_view(), name='update_bean'),
+    path('bean/<int:pk>/delete/', DeleteBeanView.as_view(), name='bean_delete'),
     
     
 ]

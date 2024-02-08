@@ -16,6 +16,7 @@
         
         <br>
         <a href="{% url 'ba:update_bean' bean.pk %}" class="btn btn-outline-info">コーヒー豆の情報を更新する</a>
+        <a href="{% url 'ba:bean_delete' bean.pk %}" class="btn btn-outline-danger">このコーヒー豆を削除する</a>
         
         <br><br>
         <a href="{% url 'ba:bean_list' %}" class="btn btn-secondary">コーヒー豆一覧へ戻る</a>
