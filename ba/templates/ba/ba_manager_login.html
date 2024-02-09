@@ -3,14 +3,17 @@
 {% block title %}管理者ログイン{% endblock %}
 
 {% block main %}
-  	<form method="post">
-	    {% csrf_token %}
-	    {{ form.username.label_tag }}
-	    {{ form.username }}
-	    <br>
-	    {{ form.password.label_tag }}
-	    {{ form.password }}
-	    <br>
-	    <button type="submit">ログイン</button>
-  	</form>
+	<div class="container mt-5">
+	  	<form method="post">
+		    {% csrf_token %}
+		    {{ form.username.label_tag }}
+		    {{ form.username }}
+		    <br>
+		    {{ form.password.label_tag }}
+		    {{ form.password }}
+		    <br><br>
+		    
+		    <button type="submit" class="btn btn-outline-success">ログイン</button>
+	  	</form>
+  	</div>
 {% endblock %}

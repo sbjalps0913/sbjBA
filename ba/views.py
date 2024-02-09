@@ -13,6 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import UserProfile, QuestionSet, Question, Option, Bean
 from .forms import UpdateBeanForm, RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm, CreateBeanForm
+from .forms import AnswerQuestionForm
 
 # Create your views here.
 
@@ -66,6 +67,66 @@ class HomeView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         # ログアウトのPOSTリクエストが来た場合はログアウト確認画面にリダイレクト
         return redirect('ba:logout')
+
+
+# 問題集一覧画面
+class QuestionSetListView(ListView):
+    model = QuestionSet
+    template_name = 'ba/ba_QuestionSet_list.html'
+    context_object_name = 'question_sets'
+
+
+# 問題開始画面
+class StartQuestionView(DetailView):
+    model = QuestionSet
+    template_name = 'ba/ba_start_question.html'
+
+    def post(self, request, *args, **kwargs):
+        question_set = self.get_object()
+        question = get_object_or_404(Question, question_set=question_set)
+        return redirect(reverse_lazy('ba:answer_question', kwargs={'pk': question.pk}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question_set'] = self.object
+        context['questions'] = Question.objects.filter(question_set=self.object)
+        return context
+
+
+# 問題詳細画面
+class QuestionDetailView(DetailView):
+    model = Question
+    template_name = 'ba/ba_Question_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # 他のコンテキストデータを必要に応じて追加
+        return context
+
+
+# 問題解答画面
+class AnswerQuestionView(FormView):
+    template_name = 'ba/ba_answer_question.html'
+    form_class = AnswerQuestionForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.question = Question.objects.get(pk=kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question'] = self.question
+        context['options'] = Option.objects.filter(question=self.question)
+        return context
+
+    def form_valid(self, form):
+        selected_option_id = form.cleaned_data['answer']
+        selected_option = self.question.options.get(pk=selected_option_id)
+        if selected_option.is_correct:
+            result = '正解'
+        else:
+            result = '不正解'
+        return self.render_to_response(self.get_context_data(form=form, result=result))
 
 
 # 【管理者】ログイン画面
@@ -173,7 +234,7 @@ class CreateQuestionView(LoginRequiredMixin, CreateView):
 
 
 # 【管理者】問題集一覧画面
-class QuestionSetListView(LoginRequiredMixin, ListView):
+class ManagerQuestionSetListView(LoginRequiredMixin, ListView):
     template_name = 'ba/ba_manager_questionlist.html'
     model = QuestionSet
     context_object_name = 'question_sets'
@@ -189,7 +250,7 @@ class QuestionSetDetailView(LoginRequiredMixin, DetailView):
     
 
 # 【管理者】問題詳細画面
-class QuestionDetailView(LoginRequiredMixin, DetailView):
+class ManagerQuestionDetailView(LoginRequiredMixin, DetailView):
     model = Question
     template_name = 'ba/ba_manager_Question_detail.html'
     context_object_name = 'question'
@@ -231,7 +292,7 @@ class UpdateQuestionView(LoginRequiredMixin, UpdateView):
     model = Question
     template_name = 'ba/ba_manager_update_Question.html'
     form_class = UpdateQuestionForm
-    success_url = reverse_lazy('ba:question_set_list')
+    #success_url = reverse_lazy('ba:question_set_list')
     login_url = '/ba/login_manager/'
 
     def get_context_data(self, **kwargs):
@@ -240,6 +301,10 @@ class UpdateQuestionView(LoginRequiredMixin, UpdateView):
         options = Option.objects.filter(question=question)
         context['options'] = options
         return context
+    
+    def get_success_url(self):
+        # 問題の詳細画面に遷移するためのURLを取得し、問題のIDを渡す
+        return reverse('ba:question_detail', kwargs={'pk': self.object.pk})
 
 
 # 【管理者】選択肢更新画面
@@ -247,7 +312,7 @@ class UpdateOptionView(LoginRequiredMixin, UpdateView):
     model = Option
     template_name = 'ba/ba_manager_update_Option.html'
     form_class = UpdateOptionForm
-    success_url = reverse_lazy('ba:question_set_list')
+    #success_url = reverse_lazy('ba:question_set_list')
     login_url = '/ba/login_manager/'
 
     def get_context_data(self, **kwargs):
@@ -255,6 +320,10 @@ class UpdateOptionView(LoginRequiredMixin, UpdateView):
         options = self.get_object()
         context['options'] = options
         return context
+    
+    def get_success_url(self):
+        # 問題の詳細画面に遷移するためのURLを取得し、問題のIDを渡す
+        return reverse('ba:question_detail', kwargs={'pk': self.object.question.pk})
 
 
 # 【管理者】問題集削除画面

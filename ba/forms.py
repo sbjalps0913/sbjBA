@@ -12,6 +12,10 @@ class RegisterForm(UserCreationForm):
     def clean_username(self):
         return self.cleaned_data['username']
     
+# 問題解答フォーム
+class AnswerQuestionForm(forms.Form):
+    answer = forms.ChoiceField(widget=forms.RadioSelect)
+
 
 # 問題集作成フォーム
 class CreateQuestionSetForm(forms.ModelForm):

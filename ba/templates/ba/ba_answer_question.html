@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %} 問題解答 {% endblock %}
+
+{% block main %}
+  	<div class="container mt-5">
+    	<h2>問題解答</h2>
+    	<form method="post">
+      		{% csrf_token %}
+      		<p>問題: {{ question.text }}</p>
+      		{% for option in options %}
+        		<input type="radio" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
+        		<label for="option_{{ option.id }}">{{ option.text }}</label><br>
+      		{% endfor %}
+      		<button type="submit" class="btn btn-primary">解答する</button>
+    	</form>
+    	
+    	{% if result %}
+      		<p>{{ result }}</p>
+    	{% endif %}
+  	</div>
+{% endblock %}

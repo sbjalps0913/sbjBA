@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %} 問題集一覧 {% endblock %}
+
+{% block main %}
+    <div class="container mt-5">
+        <h2>問題集一覧</h2>
+        {% if question_sets %}
+            <ul>
+                {% for question_set in question_sets %}
+                    <li><a href="{% url 'ba:start_question' question_set.pk %}">{{ question_set.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>現在、問題集はありません。</p>
+        {% endif %}
+    </div>
+{% endblock %}

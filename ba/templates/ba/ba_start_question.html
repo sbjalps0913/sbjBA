@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %} 問題開始 {% endblock %}
+
+{% block main %}
+  	<div class="container mt-5">
+    	<h2>{{ question_set.title }}</h2>
+    	<p>{{ question_set.description }}</p>
+    	<form method="post">
+    		{% csrf_token %}
+    		<button type="submit" class="btn btn-outline-success">スタート</button>
+    	</form>
+    	
+    	<br><br>
+    	<h3>問題</h3>
+    	<ul>
+    		{% for question in questions %}
+    			<li><a href="{% url 'ba:user_question_detail' question.pk %}">{{ question.text }}</a></li>
+    		{% endfor %}
+    	</ul>
+    	
+    	<br><br>
+    	<a href="{% url 'ba:questionset_list' %}" class="btn btn-secondary">戻る</a>
+    	<br><br>
+  	</div>
+{% endblock %}
