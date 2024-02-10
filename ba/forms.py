@@ -16,6 +16,12 @@ class RegisterForm(UserCreationForm):
 class AnswerQuestionForm(forms.Form):
     answer = forms.ChoiceField(widget=forms.RadioSelect)
 
+    def __init__(self, question, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        options = Option.objects.filter(question=question)
+        choices = [(option.id, option.text) for option in options]
+        self.fields['answer'].choices = choices
+
 
 # 問題集作成フォーム
 class CreateQuestionSetForm(forms.ModelForm):

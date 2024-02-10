@@ -110,8 +110,13 @@ class AnswerQuestionView(FormView):
     form_class = AnswerQuestionForm
 
     def dispatch(self, request, *args, **kwargs):
-        self.question = Question.objects.get(pk=kwargs['pk'])
+        self.question = get_object_or_404(Question, pk=kwargs['pk'])
         return super().dispatch(request, *args, **kwargs)
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['question'] = self.question
+        return kwargs
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -121,13 +126,15 @@ class AnswerQuestionView(FormView):
 
     def form_valid(self, form):
         selected_option_id = form.cleaned_data['answer']
-        selected_option = self.question.options.get(pk=selected_option_id)
+        selected_option = Option.objects.get(pk=selected_option_id)
         if selected_option.is_correct:
             result = '正解'
         else:
             result = '不正解'
-        return self.render_to_response(self.get_context_data(form=form, result=result))
-
+        context = self.get_context_data(form=form)
+        context['result'] = result
+        return self.render_to_response(context)
+    
 
 # 【管理者】ログイン画面
 class LoginManagerView(LoginView):
