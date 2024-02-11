@@ -81,10 +81,22 @@ class StartQuestionView(DetailView):
     model = QuestionSet
     template_name = 'ba/ba_start_question.html'
 
+    '''
     def post(self, request, *args, **kwargs):
         question_set = self.get_object()
         question = get_object_or_404(Question, question_set=question_set)
         return redirect(reverse_lazy('ba:answer_question', kwargs={'pk': question.pk}))
+    '''
+    
+    def post(self, request, *args, **kwargs):
+        question_set = self.get_object()
+        first_question = question_set.question_set.first()  # 問題集に関連する最初の問題を取得
+        if first_question:
+            return redirect(reverse_lazy('ba:answer_question', kwargs={'pk': first_question.pk}))
+        else:
+            # 問題が存在しない場合の処理
+            # 例えばエラーメッセージを表示するなど
+            pass
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -111,6 +123,7 @@ class AnswerQuestionView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.question = get_object_or_404(Question, pk=kwargs['pk'])
+        self.question_set = self.question.question_set
         return super().dispatch(request, *args, **kwargs)
     
     def get_form_kwargs(self):
@@ -122,6 +135,11 @@ class AnswerQuestionView(FormView):
         context = super().get_context_data(**kwargs)
         context['question'] = self.question
         context['options'] = Option.objects.filter(question=self.question)
+        context['question_set'] = self.question_set
+        
+        context['is_last_question'] = self.is_last_question()
+        context['next_question_id'] = self.get_next_question_pk()
+        
         return context
 
     def form_valid(self, form):
@@ -133,8 +151,36 @@ class AnswerQuestionView(FormView):
             result = '不正解'
         context = self.get_context_data(form=form)
         context['result'] = result
+
+        '''
+        # 次の問題がある場合はその問題のPKを取得し、リダイレクト
+        next_question_pk = self.get_next_question_pk()
+        if next_question_pk:
+            return redirect('ba:answer_question', pk=next_question_pk)
+        '''
+
         return self.render_to_response(context)
     
+    def is_last_question(self):
+        last_question = self.question_set.question_set.last()
+        return self.question == last_question
+    
+    # 次の問題のPKを取得
+    def get_next_question_pk(self):
+        next_question = self.question_set.question_set.filter(pk__gt=self.question.pk).first()
+        if next_question:
+            return next_question.pk
+        else:
+            return None
+    
+    '''
+    def get_success_url(self):
+        next_question = self.question.question_set.questions.filter(id__gt=self.question.id).first()
+        if next_question:
+            return reverse_lazy('ba:answer_question', kwargs={'pk': next_question.id})
+        else:
+            return reverse_lazy('ba:start_question', kwargs={'pk': self.question.question_set.pk})
+    '''
 
 # 【管理者】ログイン画面
 class LoginManagerView(LoginView):
