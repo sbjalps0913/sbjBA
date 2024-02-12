@@ -151,6 +151,7 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         context['next_question_id'] = self.get_next_question_pk()
         context['current_question_number'] = self.get_current_question_number()
         context['current_score'] = self.get_current_score()
+        context['score'] = self.get_current_score().score
         
         # 現在の問題の正解の選択肢を取得
         correct_option = Option.objects.filter(question=self.question, is_correct=True).first()
@@ -223,7 +224,7 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         question_set_id = self.question_set.id
         question_set = QuestionSet.objects.get(pk=question_set_id)
         score = Score.objects.filter(user=self.request.user, question_set=question_set).order_by('-times').first()
-        return score.score
+        return score
     
     '''
     def get_success_url(self):
@@ -233,6 +234,21 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         else:
             return reverse_lazy('ba:start_question', kwargs={'pk': self.question.question_set.pk})
     '''
+
+
+# スコア結果画面
+class ResultView(DetailView):
+    model = Score
+    template_name = 'ba/ba_result.html'
+    context_object_name = 'score'
+
+
+# スコア結果一覧画面
+class ResultListView(ListView):
+    model = Score
+    template_name = 'ba/ba_result_list.html'
+    context_object_name = 'scores'
+
 
 # 【管理者】ログイン画面
 class LoginManagerView(LoginView):

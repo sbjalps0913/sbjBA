@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} テスト結果 {% endblock %}
+
+{% block main %}
+	<div class="container mt-5">
+	    <h2>結果</h2>
+	    <p>問題集: {{ score.question_set }}</p>
+	    <p>{{ score.times }}回目</p>
+	    <p>正解数: {{ score.score }}</p>
+	    
+	    <br><br>
+	    <a href="{% url 'ba:questionset_list' %}" class="btn btn-secondary">問題集一覧に戻る</a>
+	</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AnswerQuestionView, QuestionDetailView, StartQuestionView, StartView, LoginView, LogoutView, HomeView, RegisterView, QuestionSetListView
+from .views import ResultView, ResultListView, AnswerQuestionView, QuestionDetailView, StartQuestionView, StartView, LoginView, LogoutView, HomeView, RegisterView, QuestionSetListView
 from .views import DeleteQuestionSetView, DeleteQuestionView, UpdateOptionView, UpdateQuestionView, UpdateQuestionSetView, ManagerQuestionDetailView, QuestionSetDetailView, CreateQuestionView, LoginManagerView, HomeManagerView, CreateQuestionSetView, ManagerQuestionSetListView
 from .views import ManagerBeanListView, CreateBeanView, BeanDetailView, UpdateBeanView, DeleteBeanView
 
@@ -16,6 +16,8 @@ urlpatterns = [
     path('question_set/<int:pk>/start/', StartQuestionView.as_view(), name='start_question'),
     path('question/<int:pk>/detail/', QuestionDetailView.as_view(), name='user_question_detail'),
     path('question/<int:pk>/answer/', AnswerQuestionView.as_view(), name='answer_question'),
+    path('result/<int:pk>/', ResultView.as_view(), name='result'),
+    path('result/list/', ResultListView.as_view(), name='result_list'),
     
     
     # 管理者ユーザ

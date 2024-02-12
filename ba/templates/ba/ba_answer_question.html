@@ -20,7 +20,7 @@
     	<br><br>
     	{% if result %}
       		<p>{{ result }}</p>
-      		<p>現在の得点: {{ current_score }}</p>
+      		<p>現在の得点: {{ score }}</p>
       		<br>
       		<h4>正解</h4>
       		<p>{{ correct_option }}</p>
@@ -38,7 +38,7 @@
 		        <a href="{% url 'ba:answer_question' pk=next_question_id %}" class="btn btn-primary">次の問題に進む</a>
 		    {% endif %}
 		{% else %}
-		    <a href="{% url 'ba:start_question' pk=question_set.pk %}" class="btn btn-primary">終了する</a>
+		    <a href="{% url 'ba:result' current_score.pk %}" class="btn btn-primary">終了する</a>
 		{% endif %}
 
         <br><br>
