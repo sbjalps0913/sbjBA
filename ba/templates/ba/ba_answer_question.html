@@ -4,20 +4,31 @@
 
 {% block main %}
   	<div class="container mt-5">
-    	<h2>問題解答</h2>
+    	<h2>問題{{ current_question_number }}: {{ question.text }}</h2>
     	<form method="post">
       		{% csrf_token %}
-      		<p>問題: {{ question.text }}</p>
       		{% for option in options %}
         		<input type="radio" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
         		<label for="option_{{ option.id }}">{{ option.text }}</label><br>
       		{% endfor %}
       		<br>
-      		<button type="submit" class="btn btn-outline-success">解答する</button>
+      		{% if not result %}
+      			<button type="submit" class="btn btn-outline-success">解答する</button>
+      		{% endif %}
     	</form>
     	
+    	<br><br>
     	{% if result %}
       		<p>{{ result }}</p>
+      		<p>現在の得点: {{ current_score }}</p>
+      		<br>
+      		<h4>正解</h4>
+      		<p>{{ correct_option }}</p>
+      		<br>
+      		<p>あなたの解答：{{ selected_option }}</p>
+      		
+      		<h4>解説</h4>
+      		<p>{{ question.explanation }}</p>
     	{% endif %}
     	
     	<br>

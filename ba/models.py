@@ -35,6 +35,7 @@ class Option(models.Model):
         return self.text
 
 
+# ユーザモデル
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
     is_manager = models.BooleanField(default=False)
@@ -52,6 +53,17 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.userprofile.save()
     
+
+# スコア
+class Score(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)
+    times = models.IntegerField(default=0)      # 問題集を解いた回数
+
+    def __str__(self):
+        return f"{self.user.username}'s score for {self.question_set}:{self.times}回目 [{self.score}]"
+
 
 # コーヒー豆
 class Bean(models.Model):

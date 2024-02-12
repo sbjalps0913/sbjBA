@@ -11,7 +11,7 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import UserProfile, QuestionSet, Question, Option, Bean
+from .models import UserProfile, QuestionSet, Question, Option, Bean, Score
 from .forms import UpdateBeanForm, RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm, CreateBeanForm
 from .forms import AnswerQuestionForm
 
@@ -70,14 +70,14 @@ class HomeView(LoginRequiredMixin, View):
 
 
 # 問題集一覧画面
-class QuestionSetListView(ListView):
+class QuestionSetListView(LoginRequiredMixin, ListView):
     model = QuestionSet
     template_name = 'ba/ba_QuestionSet_list.html'
     context_object_name = 'question_sets'
 
 
 # 問題開始画面
-class StartQuestionView(DetailView):
+class StartQuestionView(LoginRequiredMixin, DetailView):
     model = QuestionSet
     template_name = 'ba/ba_start_question.html'
 
@@ -92,6 +92,16 @@ class StartQuestionView(DetailView):
         question_set = self.get_object()
         first_question = question_set.question_set.first()  # 問題集に関連する最初の問題を取得
         if first_question:
+            # 既存のスコアオブジェクトを取得する
+            existing_score = Score.objects.filter(user=request.user, question_set=question_set).order_by('-times').first()
+            # すでに同じ問題集のスコアが存在する場合
+            if existing_score:
+                times = existing_score.times + 1
+            else:
+                times = 1
+            # 新しいスコアオブジェクトを作成する
+            Score.objects.create(user=request.user, question_set=question_set, times=times)
+            
             return redirect(reverse_lazy('ba:answer_question', kwargs={'pk': first_question.pk}))
         else:
             # 問題が存在しない場合の処理
@@ -106,7 +116,7 @@ class StartQuestionView(DetailView):
 
 
 # 問題詳細画面
-class QuestionDetailView(DetailView):
+class QuestionDetailView(LoginRequiredMixin, DetailView):
     model = Question
     template_name = 'ba/ba_Question_detail.html'
 
@@ -117,7 +127,7 @@ class QuestionDetailView(DetailView):
 
 
 # 問題解答画面
-class AnswerQuestionView(FormView):
+class AnswerQuestionView(LoginRequiredMixin, FormView):
     template_name = 'ba/ba_answer_question.html'
     form_class = AnswerQuestionForm
 
@@ -139,6 +149,15 @@ class AnswerQuestionView(FormView):
         
         context['is_last_question'] = self.is_last_question()
         context['next_question_id'] = self.get_next_question_pk()
+        context['current_question_number'] = self.get_current_question_number()
+        context['current_score'] = self.get_current_score()
+        
+        # 現在の問題の正解の選択肢を取得
+        correct_option = Option.objects.filter(question=self.question, is_correct=True).first()
+        if correct_option:
+            context['correct_option'] = correct_option.text
+        else:
+            context['correct_option'] = '正解の選択肢はありません'
         
         return context
 
@@ -147,10 +166,14 @@ class AnswerQuestionView(FormView):
         selected_option = Option.objects.get(pk=selected_option_id)
         if selected_option.is_correct:
             result = '正解'
+            
+            # 正解の場合は得点を加算する
+            self.add_score()
         else:
             result = '不正解'
         context = self.get_context_data(form=form)
         context['result'] = result
+        context['selected_option'] = selected_option.text
 
         '''
         # 次の問題がある場合はその問題のPKを取得し、リダイレクト
@@ -172,6 +195,35 @@ class AnswerQuestionView(FormView):
             return next_question.pk
         else:
             return None
+        
+    
+    # 現在の問題番号を取得
+    def get_current_question_number(self):
+        current_question_number = self.question_set.question_set.filter(pk__lte=self.question.pk).count()
+        return current_question_number
+    
+    def add_score(self):
+        # 最大のtimesを持つスコアオブジェクトを取得
+        max_times_score = Score.objects.filter(
+            user=self.request.user,
+            question_set=self.question_set
+        ).order_by('-times').first()
+        
+        if max_times_score:
+            # 最大のtimesを持つスコアのscoreをインクリメント
+            max_times_score.score += 1
+            max_times_score.save()
+        else:
+            # まだスコアが存在しない場合
+            return reverse_lazy('ba:questionset_list')
+        
+    # ログインユーザーの得点を取得
+    def get_current_score(self):
+        # ユーザーと問題集に関連するスコアオブジェクトのうち、最新のものを取得する
+        question_set_id = self.question_set.id
+        question_set = QuestionSet.objects.get(pk=question_set_id)
+        score = Score.objects.filter(user=self.request.user, question_set=question_set).order_by('-times').first()
+        return score.score
     
     '''
     def get_success_url(self):
