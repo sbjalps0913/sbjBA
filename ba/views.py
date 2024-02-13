@@ -10,6 +10,7 @@ from django.views.generic import DeleteView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils import timezone
 
 from .models import UserProfile, QuestionSet, Question, Option, Bean, Score
 from .forms import UpdateBeanForm, RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm, CreateBeanForm
@@ -172,6 +173,10 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
             self.add_score()
         else:
             result = '不正解'
+            
+        # 解答が終了した時点で日付を保存
+        self.save_completion_date()
+        
         context = self.get_context_data(form=form)
         context['result'] = result
         context['selected_option'] = selected_option.text
@@ -226,14 +231,15 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         score = Score.objects.filter(user=self.request.user, question_set=question_set).order_by('-times').first()
         return score
     
-    '''
-    def get_success_url(self):
-        next_question = self.question.question_set.questions.filter(id__gt=self.question.id).first()
-        if next_question:
-            return reverse_lazy('ba:answer_question', kwargs={'pk': next_question.id})
-        else:
-            return reverse_lazy('ba:start_question', kwargs={'pk': self.question.question_set.pk})
-    '''
+    # 解答を終了したときの日時を保存する
+    def save_completion_date(self):
+        # ユーザーと問題集に関連するスコアオブジェクトのうち、最新のものを取得する
+        question_set_id = self.question_set.id
+        question_set = QuestionSet.objects.get(pk=question_set_id)
+        score = Score.objects.filter(user=self.request.user, question_set=question_set).order_by('-times').first()
+        if score:
+            score.date = timezone.now()
+            score.save()
 
 
 # スコア結果画面
