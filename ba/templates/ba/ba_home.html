@@ -4,9 +4,9 @@
 
 {% block main %}
   	<div class="container mt-5">
-    	<h2>home</h2>
-    	<a href="{% url 'ba:logout' %}">ログアウト</a>
-    	<br><br>
+    	<h2>ホーム</h2>
     	<a href="{% url 'ba:questionset_list' %}">問題集を見る</a>
+    	<br><br>
+    	<a href="{% url 'ba:result_list' %}">自分のテスト結果を見る</a>
   	</div>
 {% endblock %}

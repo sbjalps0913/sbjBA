@@ -241,6 +241,13 @@ class ResultView(DetailView):
     model = Score
     template_name = 'ba/ba_result.html'
     context_object_name = 'score'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        score = self.get_object()
+        question_count = score.question_set.question_set.count()
+        context['question_count'] = question_count
+        return context
 
 
 # スコア結果一覧画面
