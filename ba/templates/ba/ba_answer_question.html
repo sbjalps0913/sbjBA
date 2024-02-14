@@ -38,7 +38,11 @@
 		        <a href="{% url 'ba:answer_question' pk=next_question_id %}" class="btn btn-primary">次の問題に進む</a>
 		    {% endif %}
 		{% else %}
-		    <a href="{% url 'ba:result' current_score.pk %}" class="btn btn-primary">終了する</a>
+		    {% if final_score %}
+                <a href="{% url 'ba:result' final_score.pk %}" class="btn btn-primary">終了する</a>
+            {% else %}
+                <button type="button" class="btn btn-secondary">終了する</button>
+            {% endif %}
 		{% endif %}
 
         <br><br>

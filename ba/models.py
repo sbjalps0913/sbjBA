@@ -64,7 +64,7 @@ class Score(models.Model):
     count = models.IntegerField(default=0)  # 解答した問題数
 
     def __str__(self):
-        return f"{self.user.username}'s score for {self.question_set}:{self.times}回目 [{self.score}] 受験日{self.date}"
+        return f"{self.user.username}'s score for {self.question_set}:{self.times}回目 スコア:{self.score} (受験日:{self.date})"
 
 
 # 最終スコア
