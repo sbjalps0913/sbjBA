@@ -5,10 +5,12 @@
 {% block main %}
   	<div class="container mt-5">
     	<h2>ホーム</h2>
-    	<a href="{% url 'ba:questionset_list' %}">問題集</a>
-    	<br><br>
-    	<a href="{% url 'ba:result_list' %}">自分のテスト結果</a>
-    	<br><br>
-    	<a href="{% url 'ba:user_bean_list' %}">コーヒー豆</a>
+    	<ul>
+	    	<li><a href="{% url 'ba:questionset_list' %}">問題集</a></li>
+	    	<br><br>
+	    	<li><a href="{% url 'ba:result_list' %}">自分のテスト結果</a></li>
+	    	<br><br>
+	    	<li><a href="{% url 'ba:user_bean_list' %}">コーヒー豆</a></li>
+    	</u;>
   	</div>
 {% endblock %}

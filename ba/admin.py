@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import QuestionSet, Question, Option, UserProfile, Bean, Score
+from .models import QuestionSet, Question, Option, UserProfile, Bean, Score, FinalScore
 
 # Register your models here.
 
@@ -9,3 +9,4 @@ admin.site.register(Option)
 admin.site.register(UserProfile)
 admin.site.register(Bean)
 admin.site.register(Score)
+admin.site.register(FinalScore)

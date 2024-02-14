@@ -61,6 +61,19 @@ class Score(models.Model):
     score = models.IntegerField(default=0)
     times = models.IntegerField(default=0)  # 問題集を解いた回数
     date = models.DateTimeField(auto_now_add=True)  # 解答終了日時
+    count = models.IntegerField(default=0)  # 解答した問題数
+
+    def __str__(self):
+        return f"{self.user.username}'s score for {self.question_set}:{self.times}回目 スコア:{self.score} (受験日:{self.date})"
+
+
+# 最終スコア
+class FinalScore(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)
+    times = models.IntegerField(default=0)  # 問題集を解いた回数
+    date = models.DateTimeField(auto_now_add=True)  # 解答終了日時
 
     def __str__(self):
         return f"{self.user.username}'s score for {self.question_set}:{self.times}回目 [{self.score}] 受験日{self.date}"
