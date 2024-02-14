@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %} コーヒー豆一覧 {% endblock %}
+
+{% block main %}
+	<div class="container mt-5">
+	  	<h2>コーヒー豆一覧</h2>
+	  	
+	  	<!-- 検索フォーム -->
+	  	<form action="{% url 'ba:bean_search' %}" method="GET">
+    		<div class="input-group mb-3">
+      			<input type="text" class="form-control" placeholder="[コーヒー名]または[スリーレター]を入力して検索" name="q">
+      			<div class="input-group-append">
+	        		<button class="btn btn-outline-secondary" type="submit">検索</button>
+	      		</div>
+    		</div>
+  		</form>
+
+	  	
+	  	
+		<ul class="list-group">
+			{% if beans %}
+			    {% for bean in beans %}
+				    <li class="list-group-item" style="background-color: {% if bean.roast == 1 %}#f0e68c{% elif bean.roast == 2 %}#deb887{% elif bean.roast == 3 %}#f4a460{% elif bean.roast == 4 %}#cd853f{% elif bean.roast == 5 %}#a0522d{% elif bean.roast == 6 %}#8b4513	{% endif %}">
+				      	<a href="{% url 'ba:user_bean_detail' bean.id %}">{{ bean.name }}</a>
+				    </li>
+			    {% endfor %}
+			{% else %}
+				<p>一致するコーヒー豆の情報がありません</p>
+			{% endif %}
+	  	</ul>
+	  	
+	  	<br><br>
+	  	<a href="{% url 'ba:home' %}" class="btn btn-secondary">ホームに戻る</a>
+	</div>
+{% endblock %}
