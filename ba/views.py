@@ -261,6 +261,40 @@ class ResultListView(ListView):
     model = Score
     template_name = 'ba/ba_result_list.html'
     context_object_name = 'scores'
+    
+    
+# コーヒー豆一覧画面
+class BeanListView(ListView):
+    model = Bean
+    template_name = 'ba/ba_bean_list.html'
+    context_object_name = 'beans'
+
+
+# コーヒー豆詳細画面
+class BeanDetailView(DetailView):
+    model = Bean
+    template_name = 'ba/ba_bean_detail.html'
+    context_object_name = 'bean'
+    
+    
+# コーヒー豆検索用ビュー
+class BeanSearchView(ListView):
+    model = Bean
+    template_name = 'ba/ba_bean_list.html'
+    context_object_name = 'beans'
+    paginate_by = 10
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query.strip():
+            # コーヒー名またはスリーレターに一致するコーヒー豆をフィルタリングして返す
+            return Bean.objects.filter(name__icontains=query) | Bean.objects.filter(three_letters__icontains=query)
+        else:
+            # クエリが空白の場合はすべてのコーヒー豆を返す
+            return Bean.objects.all()
+            
+    
+    
 
 
 # 【管理者】ログイン画面
@@ -509,7 +543,7 @@ class CreateBeanView(LoginRequiredMixin, CreateView):
 
 
 # 【管理者】コーヒー豆詳細画面
-class BeanDetailView(LoginRequiredMixin, DetailView):
+class ManagerBeanDetailView(LoginRequiredMixin, DetailView):
     model = Bean
     template_name = 'ba/ba_manager_Bean_detail.html'
     context_object_name = 'bean'

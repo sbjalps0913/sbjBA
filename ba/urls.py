@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import ResultView, ResultListView, AnswerQuestionView, QuestionDetailView, StartQuestionView, StartView, LoginView, LogoutView, HomeView, RegisterView, QuestionSetListView
+from .views import BeanSearchView, BeanListView, BeanDetailView, ResultView, ResultListView, AnswerQuestionView, QuestionDetailView, StartQuestionView, StartView, LoginView, LogoutView, HomeView, RegisterView, QuestionSetListView
 from .views import DeleteQuestionSetView, DeleteQuestionView, UpdateOptionView, UpdateQuestionView, UpdateQuestionSetView, ManagerQuestionDetailView, QuestionSetDetailView, CreateQuestionView, LoginManagerView, HomeManagerView, CreateQuestionSetView, ManagerQuestionSetListView
-from .views import ManagerBeanListView, CreateBeanView, BeanDetailView, UpdateBeanView, DeleteBeanView
+from .views import ManagerBeanListView, CreateBeanView, ManagerBeanDetailView, UpdateBeanView, DeleteBeanView
 
 
 app_name = 'ba'
@@ -12,12 +12,17 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('home/', HomeView.as_view(), name='home'),
+    
     path('question_set/list/', QuestionSetListView.as_view(), name='questionset_list'),
     path('question_set/<int:pk>/start/', StartQuestionView.as_view(), name='start_question'),
     path('question/<int:pk>/detail/', QuestionDetailView.as_view(), name='user_question_detail'),
     path('question/<int:pk>/answer/', AnswerQuestionView.as_view(), name='answer_question'),
     path('result/<int:pk>/', ResultView.as_view(), name='result'),
     path('result/list/', ResultListView.as_view(), name='result_list'),
+    
+    path('beans/list/', BeanListView.as_view(), name='user_bean_list'),
+    path('beans_detail/<int:pk>/', BeanDetailView.as_view(), name='user_bean_detail'),
+    path('beans/search/', BeanSearchView.as_view(), name='bean_search'),
     
     
     # 管理者ユーザ
@@ -39,7 +44,7 @@ urlpatterns = [
 
     path('bean/list/', ManagerBeanListView.as_view(), name='bean_list'),
     path('bean/create/', CreateBeanView.as_view(), name='create_bean'),
-    path('bean_detail/<int:pk>/', BeanDetailView.as_view(), name='bean_detail'),
+    path('bean_detail/<int:pk>/', ManagerBeanDetailView.as_view(), name='bean_detail'),
     path('bean/<int:pk>/update/', UpdateBeanView.as_view(), name='update_bean'),
     path('bean/<int:pk>/delete/', DeleteBeanView.as_view(), name='bean_delete'),
     

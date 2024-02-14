@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ bean.name }}の詳細 {% endblock %}
+
+{% block main %}
+	<div class="container mt-5">
+	  	<h2>{{ bean.name }}</h2>
+	  	<ul>
+		    <li><strong>スリーレター:</strong> {{ bean.three_letters }}</li>
+		    <li><strong>ローストレベル:</strong> {{ bean.roast }}</li>
+		    <li><strong>風味:</strong> {{ bean.flavor }}</li>
+		    <li><strong>酸味:</strong> {{ bean.acidity }}</li>
+		    <li><strong>コク:</strong> {{ bean.body }}</li>
+		    <li><strong>加工法:</strong> {{ bean.processing }}</li>
+		    <li><strong>地域:</strong> {{ bean.region }}</li>
+		    <li><strong>相性の良い風味:</strong> {{ bean.complementary }}</li>
+	  	</ul>
+	  	
+	  	<br><br>
+  		<a href="{% url 'ba:user_bean_list' %}" class="btn btn-secondary">戻る</a>
+	</div>
+{% endblock %}

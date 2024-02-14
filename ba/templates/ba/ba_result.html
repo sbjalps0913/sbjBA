@@ -5,10 +5,11 @@
 {% block main %}
 	<div class="container mt-5">
 	    <h2>結果</h2>
-	    <p>問題集: {{ score.question_set }}</p>
-	    <p>{{ score.times }}回目</p>
-	    <p>問題数: {{ question_count }}</p>
-	    <p>正解数: {{ score.score }}</p>
+	    <p>問題集：{{ score.question_set }}</p>
+	    <p>解答日時：{{ score.date }}</p>
+	    <p>回数：{{ score.times }}回目</p>
+	    <p>問題数：{{ question_count }}</p>
+	    <p>正解数：{{ score.score }}</p>
 	    
 	    <div style="width: 300px; height: 300px;">
 	    	<canvas id="myChart" width="400" height="400"></canvas>
