@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 
-from .models import UserProfile, QuestionSet, Question, Option, Bean, Score
+from .models import UserProfile, QuestionSet, Question, Option, Bean, Score, FinalScore
 from .forms import UpdateBeanForm, RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm, CreateBeanForm
 from .forms import AnswerQuestionForm
 
@@ -174,8 +174,16 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         else:
             result = '不正解'
             
+        # 解答した回数をインクリメント
+        self.increment_count()    
+        
         # 解答が終了した時点で日付を保存
         self.save_completion_date()
+        
+        # 解答が終了したかどうかの判定
+        if self.is_all_questions_answered():
+            # 問題集の全ての問題に回答済みの場合、FinalScoreオブジェクトを作成
+            self.create_final_score()
         
         context = self.get_context_data(form=form)
         context['result'] = result
@@ -240,6 +248,37 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         if score:
             score.date = timezone.now()
             score.save()
+        
+    # 解答した回数をインクリメント    
+    def increment_count(self):
+        score = self.get_current_score()
+        score.count += 1
+        score.save()
+    
+    # 全ての問題に解答したかどうかを判定
+    def is_all_questions_answered(self):
+        total_questions_count = self.question_set.question_set.count()
+        answered_questions_count = self.get_current_score().count
+        return total_questions_count == answered_questions_count  
+            
+    def create_final_score(self):
+        question_set_id = self.question_set.id
+        question_set = QuestionSet.objects.get(pk=question_set_id)
+        score = Score.objects.filter(user=self.request.user, question_set=question_set).order_by('-times').first()
+        
+        # 直前の受験回数を取得
+        previous_final_score = FinalScore.objects.filter(user=self.request.user, question_set=self.question_set).order_by('-times').first()
+        previous_times = previous_final_score.times if previous_final_score else 0
+        
+        if score:
+            # FinalScoreにスコアの内容をコピー
+            final_score = FinalScore.objects.create(
+                user=self.request.user,
+                question_set=question_set,
+                score=score.score,
+                times=previous_times+1,
+                date=score.date
+            )
 
 
 # スコア結果画面
