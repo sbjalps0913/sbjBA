@@ -11,6 +11,13 @@
 	    <p>問題数：{{ question_count }}</p>
 	    <p>正解数：{{ score.score }}</p>
 	    
+	    <h3>各問題の正誤</h3>
+        <ul>
+            {% for question, result in question_results.items %}
+                <li>{{ question }}: {{ result }}</li>
+            {% endfor %}
+        </ul>
+	    
 	    <div style="width: 300px; height: 300px;">
 	    	<canvas id="myChart" width="400" height="400"></canvas>
 	    </div>

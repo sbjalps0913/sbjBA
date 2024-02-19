@@ -27,9 +27,18 @@
       		<p>現在の得点: {{ score }}</p>
       		<br>
       		<h4>正解</h4>
-      		<p>{{ correct_option }}</p>
+      		<ul>
+			    {% for option in correct_options %}
+			      	<li>{{ option.text }}</li>
+			    {% endfor %}
+			</ul>
       		<br>
-      		<p>あなたの解答：{{ selected_option }}</p>
+      		<p>あなたの解答：</p>
+      		<ul>
+		        {% for option in selected_options %}
+		            <li>{{ option.text }}</li>
+		        {% endfor %}
+		    </ul>
       		
       		<h4>解説</h4>
       		<p>{{ question.explanation }}</p>

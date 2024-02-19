@@ -80,6 +80,18 @@ class FinalScore(models.Model):
         return f"{self.user.username}'s score for {self.question_set}:{self.times}回目 [{self.score}] 受験日{self.date}"
 
 
+# 解答
+class Answer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    selected_options = models.ManyToManyField(Option)  # 複数の選択肢を保存するフィールド
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        selected_option_texts = ", ".join(option.text for option in self.selected_options.all())
+        return f'{self.user.username}の解答: {selected_option_texts} ({self.question.text})'
+
+
 # コーヒー豆
 class Bean(models.Model):
     name = models.CharField(max_length=20)

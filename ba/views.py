@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 
-from .models import UserProfile, QuestionSet, Question, Option, Bean, Score, FinalScore
+from .models import UserProfile, QuestionSet, Question, Option, Bean, Score, FinalScore, Answer
 from .forms import UpdateBeanForm, RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm, CreateBeanForm
 from .forms import AnswerQuestionForm
 
@@ -154,11 +154,11 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         context['score'] = self.get_current_score().score
         
         # 現在の問題の正解の選択肢を取得
-        correct_option = Option.objects.filter(question=self.question, is_correct=True).first()
-        if correct_option:
-            context['correct_option'] = correct_option.text
+        correct_options = Option.objects.filter(question=self.question, is_correct=True)
+        if correct_options.exists():
+            context['correct_options'] = correct_options
         else:
-            context['correct_option'] = '正解の選択肢はありません'
+            context['correct_options'] = '正解の選択肢がありません'
         
         return context
 
@@ -171,13 +171,8 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         #print("解答",selected_option_ids)
         #print("正解",correct_options.values_list('id', flat=True))
         
-        if set(selected_option_ids) == set(correct_options.values_list('id', flat=True)):
-            result = '正解'
-            
-            # 正解の場合は得点を加える
-            self.add_score()
-        else:
-            result = '不正解'
+        is_correct = set(selected_option_ids) == set(correct_options.values_list('id', flat=True))
+        result = '正解' if is_correct else '不正解'
         
         '''
         if selected_options.is_correct:
@@ -188,6 +183,18 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         else:
             result = '不正解'
         '''
+        
+        # ユーザーの解答を保存
+        user_answer = Answer.objects.create(
+            user=self.request.user,
+            question=self.question,
+            is_correct=is_correct
+        )
+        user_answer.selected_options.set(selected_options)  # 選択された選択肢を保存
+            
+        # 解答が正解なら得点を加算
+        if is_correct:
+            self.add_score()
             
         # 解答した回数をインクリメント
         self.increment_count()    
@@ -198,7 +205,7 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         context = self.get_context_data(form=form)
         context['result'] = result
         #context['selected_option'] = selected_option.text
-        context['selected_options'] = selected_options.values_list('text', flat=True)
+        context['selected_options'] = selected_options
         
         # 問題集の全ての問題に回答済みの場合、FinalScoreオブジェクトを作成
         context['final_score'] = self.create_final_score()
@@ -308,8 +315,26 @@ class ResultView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         score = self.get_object()
+        question_set = score.question_set
+        answers = Answer.objects.filter(user=self.request.user, question__question_set=question_set)
+        
         question_count = score.question_set.question_set.count()
         context['question_count'] = question_count
+        
+        # 問題ごとの解答結果を格納する辞書を作成
+        question_results = {}
+        for answer in answers:
+            question_text = answer.question.text
+            correct_options = [option.text for option in answer.selected_options.filter(is_correct=True)]
+            selected_options = [option.text for option in answer.selected_options.all()]
+            if set(selected_options) == set(correct_options):
+                result = '正解'
+            else:
+                result = '不正解'
+            question_results[question_text] = result
+
+        context['question_results'] = question_results
+        print(question_results)
         return context
 
 
