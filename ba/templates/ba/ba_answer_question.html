@@ -8,7 +8,11 @@
     	<form method="post">
       		{% csrf_token %}
       		{% for option in options %}
-        		<input type="radio" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
+        		{% if question.is_multi %}
+		            <input type="checkbox" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
+		        {% else %}
+		            <input type="radio" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
+		        {% endif %}
         		<label for="option_{{ option.id }}">{{ option.text }}</label><br>
       		{% endfor %}
       		<br>

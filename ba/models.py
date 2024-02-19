@@ -21,6 +21,7 @@ class Question(models.Model):
     question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)     # 属する問題集
     text = models.TextField()
     explanation = models.TextField(blank=True, null=True)   # 解説
+    is_multi = models.BooleanField(default=False)   # 複数問題か否か
     
     def __str__(self):
         return self.text

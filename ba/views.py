@@ -163,15 +163,31 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         return context
 
     def form_valid(self, form):
-        selected_option_id = form.cleaned_data['answer']
-        selected_option = Option.objects.get(pk=selected_option_id)
-        if selected_option.is_correct:
+        selected_option_ids = form.cleaned_data['answer']    # 複数選択肢の場合、複数の選択肢がリストとして返される
+        selected_option_ids = [int(id) for id in selected_option_ids]
+        selected_options = Option.objects.filter(pk__in=selected_option_ids)
+        
+        correct_options = Option.objects.filter(question=self.question, is_correct=True)
+        #print("解答",selected_option_ids)
+        #print("正解",correct_options.values_list('id', flat=True))
+        
+        if set(selected_option_ids) == set(correct_options.values_list('id', flat=True)):
+            result = '正解'
+            
+            # 正解の場合は得点を加える
+            self.add_score()
+        else:
+            result = '不正解'
+        
+        '''
+        if selected_options.is_correct:
             result = '正解'
             
             # 正解の場合は得点を加算する
             self.add_score()
         else:
             result = '不正解'
+        '''
             
         # 解答した回数をインクリメント
         self.increment_count()    
@@ -181,7 +197,8 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         
         context = self.get_context_data(form=form)
         context['result'] = result
-        context['selected_option'] = selected_option.text
+        #context['selected_option'] = selected_option.text
+        context['selected_options'] = selected_options.values_list('text', flat=True)
         
         # 問題集の全ての問題に回答済みの場合、FinalScoreオブジェクトを作成
         context['final_score'] = self.create_final_score()
