@@ -334,7 +334,12 @@ class ResultView(DetailView):
             question_results[question_text] = result
 
         context['question_results'] = question_results
-        print(question_results)
+        #print(question_results)
+        
+        rate = (score.score / question_count) * 100
+        score.rate = rate
+        print(rate)
+        score.save()
         return context
 
 

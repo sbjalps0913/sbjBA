@@ -5,13 +5,38 @@
 {% block main %}
 	<div class="container mt-5">
 	  	<h2>テスト結果一覧</h2>
-	  	<ul>
-		    {% for score in scores %}
-		      	<li><a href="{% url 'ba:result' pk=score.pk %}">{{ score.question_set }}：{{ score.times }}回目</a></li>
-		    {% empty %}
-		      	<li>テスト結果がありません。</li>
-		    {% endfor %}
-	  	</ul>
+	  	<table class="table">
+	        <thead>
+	            <tr>
+	                <th>問題集</th>
+	                <th>受験回数</th>
+	                <th>点数</th>
+	                <th>受験日時</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            {% for score in scores %}
+			       	<tr style="background-color:
+			            {% if score.rate > 80 %}
+			                lightgreen;			                
+			            {% elif score.rate <= 30 %}
+			                lightcoral;
+			            {% else %}
+			            	white;
+			            {% endif %}">
+						
+		                <td><a href="{% url 'ba:result' pk=score.pk %}">{{ score.question_set }}</a></td>
+		                <td>{{ score.times }}回目</td>
+		                <td>{{ score.score }}</td>
+		                <td>{{ score.date }}</td>
+		            </tr>
+	            {% empty %}
+		            <tr>
+		                <td colspan="3">テスト結果がありません。</td>
+		            </tr>
+	            {% endfor %}
+	        </tbody>
+	    </table>
 	  	
 	  	<br><br>
 	  	<a href="{% url 'ba:home' %}" class="btn btn-secondary">ホームに戻る</a>
