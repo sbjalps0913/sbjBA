@@ -10,7 +10,7 @@
 	            <tr>
 	                <th>問題集</th>
 	                <th>受験回数</th>
-	                <th>点数</th>
+	                <th>得点</th>
 	                <th>受験日時</th>
 	            </tr>
 	        </thead>
@@ -27,7 +27,7 @@
 						
 		                <td><a href="{% url 'ba:result' pk=score.pk %}">{{ score.question_set }}</a></td>
 		                <td>{{ score.times }}回目</td>
-		                <td>{{ score.score }}</td>
+		                <td>{{ score.rate }}</td>
 		                <td>{{ score.date }}</td>
 		            </tr>
 	            {% empty %}

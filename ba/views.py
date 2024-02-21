@@ -113,6 +113,10 @@ class StartQuestionView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['question_set'] = self.object
         context['questions'] = Question.objects.filter(question_set=self.object)
+        
+        # 過去の試験結果を取得
+        past_results = FinalScore.objects.filter(user=self.request.user, question_set=self.object).order_by('-date')
+        context['past_results'] = past_results
         return context
 
 
@@ -338,7 +342,7 @@ class ResultView(DetailView):
         
         rate = (score.score / question_count) * 100
         score.rate = rate
-        print(rate)
+        #print(rate)
         score.save()
         return context
 

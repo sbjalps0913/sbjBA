@@ -20,6 +20,31 @@
     	</ul>
     	
     	<br><br>
+    	<h3>過去のテスト結果</h3>
+    	<table class="table">
+            <thead>
+                <tr>
+                    <th>受験日時</th>
+                    <th>得点</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in past_results %}
+                    <tr>
+                        <td>{{ result.date }}</td>
+                        <td>{{ result.rate }}</td>
+                        <td><a href="{% url 'ba:result' pk=result.pk %}">詳細を見る</a></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3">過去の試験結果はありません。</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    	
+    	<br><br>
     	<a href="{% url 'ba:questionset_list' %}" class="btn btn-secondary">戻る</a>
     	<br><br>
   	</div>
