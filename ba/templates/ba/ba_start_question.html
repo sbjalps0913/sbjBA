@@ -21,7 +21,7 @@
     	
     	<br><br>
     	<h3>過去のテスト結果</h3>
-    	<table class="table">
+    	<table class="table" border="1">
             <thead>
                 <tr>
                     <th>受験日時</th>
@@ -45,7 +45,9 @@
         </table>
     	
     	<br><br>
-    	<a href="{% url 'ba:questionset_list' %}" class="btn btn-secondary">戻る</a>
+    	<div class="button_line006">
+    		<a href="{% url 'ba:questionset_list' %}">戻る</a>
+    	</div>
     	<br><br>
   	</div>
 {% endblock %}

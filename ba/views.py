@@ -167,6 +167,8 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         return context
 
     def form_valid(self, form):
+        context = self.get_context_data(form=form)
+        
         selected_option_ids = form.cleaned_data['answer']    # 複数選択肢の場合、複数の選択肢がリストとして返される
         selected_option_ids = [int(id) for id in selected_option_ids]
         selected_options = Option.objects.filter(pk__in=selected_option_ids)
@@ -176,6 +178,8 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         #print("正解",correct_options.values_list('id', flat=True))
         
         is_correct = set(selected_option_ids) == set(correct_options.values_list('id', flat=True))
+        context['is_correct'] = is_correct
+        
         result = '正解' if is_correct else '不正解'
         
         '''
@@ -206,7 +210,6 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         # 解答が終了した時点で日付を保存
         self.save_completion_date()
         
-        context = self.get_context_data(form=form)
         context['result'] = result
         #context['selected_option'] = selected_option.text
         context['selected_options'] = selected_options
@@ -353,12 +356,15 @@ class ResultListView(ListView):
     template_name = 'ba/ba_result_list.html'
     context_object_name = 'scores'
     
-    
 # コーヒー豆一覧画面
 class BeanListView(ListView):
     model = Bean
     template_name = 'ba/ba_bean_list.html'
     context_object_name = 'beans'
+    
+    def get_queryset(self):
+        # ローストレベルで昇順にソートされたクエリセットを返す
+        return Bean.objects.order_by('roast')
 
 
 # コーヒー豆詳細画面

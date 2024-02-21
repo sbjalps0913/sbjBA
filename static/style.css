@@ -1,10 +1,116 @@
 
 # 背景色
 body {
-    background-color: #EEEEEE;
+    background-color: #f0f0f0;
 }
 
 .my-custom-style {
     color: red;
-    font-size: 18px;
+    font-size: 20px;
 }
+
+
+# 解答の正誤による色の変化
+.correct-answer {
+    color: green; /* 正解の場合の文字色 */
+    font-size: 25px;
+}
+
+.incorrect-answer {
+    color: red; /* 不正解の場合の文字色 */
+    font-size: 25px;
+}
+
+
+
+/* LINE001 */
+.button_line001 a {
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 200px;
+    padding: 10px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 600;
+    margin-left: 50px;
+}
+.button_line001 a:before {
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: rgba(0,0,0,.1);
+    transform: translateX(-50%);
+}
+.button_line001 a:after {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: #000;
+    transform: scale(0, 1);
+    transform-origin: left top;
+    transition: transform .3s;
+}
+.button_line001 a:hover {
+    opacity: 0.7;
+}
+.button_line001 a:hover:after {
+    transform: scale(1, 1);
+}
+
+
+# 「戻る」など
+.button_line006 {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+
+.button_line006 a {
+    position: relative; /* 相対位置指定 */
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    padding: 10px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 600;
+}
+
+.button_line006 a:before,
+.button_line006 a:after {
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    content: '';
+    transition: all .3s;
+    background: #000;
+}
+
+.button_line006 a:before {
+    top: 0;
+    left: 0;
+}
+
+.button_line006 a:after {
+    bottom: 0; /* 下部に線を配置 */
+    right: 0;
+}
+
+.button_line006 a:hover:before,
+.button_line006 a:hover:after {
+    width: 0;
+}
+
+
+      
+
+
+
+

@@ -5,7 +5,7 @@
 {% block main %}
 	<div class="container mt-5">
 	  	<h2>テスト結果一覧</h2>
-	  	<table class="table">
+	  	<table class="table" border="1">
 	        <thead>
 	            <tr>
 	                <th>問題集</th>
@@ -16,15 +16,7 @@
 	        </thead>
 	        <tbody>
 	            {% for score in scores %}
-			       	<tr style="background-color:
-			            {% if score.rate > 80 %}
-			                lightgreen;			                
-			            {% elif score.rate <= 30 %}
-			                lightcoral;
-			            {% else %}
-			            	white;
-			            {% endif %}">
-						
+			       	<tr>
 		                <td><a href="{% url 'ba:result' pk=score.pk %}">{{ score.question_set }}</a></td>
 		                <td>{{ score.times }}回目</td>
 		                <td>{{ score.rate }}</td>
