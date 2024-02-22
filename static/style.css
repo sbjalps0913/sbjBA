@@ -23,10 +23,16 @@ body {
 
 
 
-/* LINE001 */
-.button_line001 a {
+# メニュー選択
+.button_line1 {
     position: relative;
-    display: flex;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+
+.button_line1 a {
+    position: relative;
+    display: inline-block;
     justify-content: space-around;
     align-items: center;
     margin: 0 auto;
@@ -35,9 +41,9 @@ body {
     color: #313131;
     transition: 0.3s ease-in-out;
     font-weight: 600;
-    margin-left: 50px;
+    text-decoration: none; /* リンクの下線を削除 */
 }
-.button_line001 a:before {
+.button_line1 a:before {
     position: absolute;
     bottom: 0px;
     left: 50%;
@@ -47,7 +53,7 @@ body {
     background: rgba(0,0,0,.1);
     transform: translateX(-50%);
 }
-.button_line001 a:after {
+.button_line1 a:after {
     position: absolute;
     bottom: 0px;
     left: 0;
@@ -59,10 +65,10 @@ body {
     transform-origin: left top;
     transition: transform .3s;
 }
-.button_line001 a:hover {
+.button_line1 a:hover {
     opacity: 0.7;
 }
-.button_line001 a:hover:after {
+.button_line1 a:hover:after {
     transform: scale(1, 1);
 }
 
@@ -81,6 +87,7 @@ body {
     color: #313131;
     transition: 0.3s ease-in-out;
     font-weight: 600;
+    text-decoration: none; /* リンクの下線を削除 */
 }
 
 .button_line006 a:before,
@@ -107,6 +114,65 @@ body {
 .button_line006 a:hover:after {
     width: 0;
 }
+
+
+# 「スタート」ボタン
+.button_line004 {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+
+.button_line004 button {
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 200px;
+    padding: 10px 25px;
+    color: #000;
+    transition: 0.3s ease-in-out;
+    font-weight: 600;
+    border: none;
+    cursor: pointer; /* ボタンのカーソルをポインターに変更 */
+    background: transparent; /* ボタンの背景色を透明に設定 */
+}
+.button_line004 button:before,
+.button_line004 button:after {
+	content: '';
+	width: 18px;
+	height: 18px;
+	border-color: #000;
+	box-sizing: border-box;
+	border-style :solid;
+	display: block;
+	position: absolute;
+	transition: all 0.3s ease-in-out;
+}
+.button_line004 button:before {
+	top: -6px;
+	left: -6px;
+	border-width: 2px 0 0 2px;
+	z-index: 5;
+}
+.button_line004 button:after {
+	bottom: -6px;
+	right: -6px;
+	border-width: 0 2px 2px 0;
+}
+.button_line004 button:hover:before,
+.button_line004 button:hover:after {
+	width: calc(100% + 12px);
+	height: calc(100% + 12px);
+	border-color: #000;
+}
+.button_line004 button:hover {
+	color: #fff;
+	background-color: #000;
+	border-color: #000;
+}
+
 
 
       
