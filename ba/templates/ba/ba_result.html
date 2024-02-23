@@ -18,11 +18,17 @@
 	    <p><strong>正解数：</strong>{{ score.score }}</p>
 	    
 	    <h3>各問題の正誤</h3>
-        <ul>
-            {% for question, result in question_results.items %}
-                <li>{{ question }}: {{ result }}</li>
+        <ol>
+            {% for question, result_info in question_results.items %}
+                <li>
+                	{% if result_info.correct_flag %}
+		                <span style="color: green;">&#10004;</span> ：{{ question }}
+		            {% else %}
+		                <span style="color: red;">&#10006;</span> ：{{ question }}
+		            {% endif %}
+                </li>
             {% endfor %}
-        </ul>
+        </ol>
 	    
 	    <br><br>
 	    <div class="button_line0021">

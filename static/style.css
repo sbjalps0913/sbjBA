@@ -4,11 +4,21 @@ body {
     background-color: #f0f0f0;
 }
 
-.my-custom-style {
+.green {
+	color: green;
+	font-size: 20px;
+}
+
+.red {
     color: red;
     font-size: 20px;
 }
 
+/* ○と×のスタイル */
+li span {
+    font-size: 20px;
+    margin-right: 5px; /* ○と×の間隔を調整 */
+}
 
 # 解答の正誤による色の変化
 .correct-answer {

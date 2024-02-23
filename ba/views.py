@@ -327,26 +327,34 @@ class ResultView(DetailView):
         
         question_count = score.question_set.question_set.count()
         context['question_count'] = question_count
-        
+
         # 問題ごとの解答結果を格納する辞書を作成
         question_results = {}
         for answer in answers:
             question_text = answer.question.text
-            correct_options = [option.text for option in answer.selected_options.filter(is_correct=True)]
+            '''
+            selected_options = set(option.id for option in answer.selected_options.all())
+            correct_options = set(option.id for option in answer.question.options.filter(is_correct=True))
+            '''
             selected_options = [option.text for option in answer.selected_options.all()]
+            correct_options = [option.text for option in answer.question.option_set.filter(is_correct=True)]
+            
             if set(selected_options) == set(correct_options):
                 result = '正解'
+                correct_flag = True
             else:
                 result = '不正解'
-            question_results[question_text] = result
+                correct_flag = False
+            question_results[question_text] = {'result': result, 'correct_flag': correct_flag}
 
         context['question_results'] = question_results
-        #print(question_results)
+        print(question_results)
         
         rate = (score.score / question_count) * 100
         score.rate = rate
         #print(rate)
         score.save()
+        
         return context
 
 
