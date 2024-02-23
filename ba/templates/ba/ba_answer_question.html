@@ -61,7 +61,9 @@
 			    {% endif %}
 			{% else %}
 			    {% if final_score %}
-	                <a href="{% url 'ba:result' final_score.pk %}" class="btn btn-primary">終了する</a>
+			    	<div class="button_finish">
+	                	<a href="{% url 'ba:result' final_score.pk %}">終了する</a>
+	                </div>
 	            {% else %}
 	                
 	            {% endif %}

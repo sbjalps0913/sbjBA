@@ -352,6 +352,32 @@ body {
 }
 
 
+# 「終了する」ボタン
+.button_finish {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_finish a {
+    background: #dcdcdc;
+    border-radius: 50px;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 260px;
+    padding: 10px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 500;
+    text-decoration: none; /* リンクの下線を削除 */
+}
+.button_finish a:hover {
+    background: #313131;
+    color: #FFF;
+}
+
 
 
 
