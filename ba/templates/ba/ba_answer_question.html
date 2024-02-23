@@ -17,7 +17,9 @@
       		{% endfor %}
       		<br>
       		{% if not result %}
-      			<button type="submit" class="btn btn-outline-success">解答する</button>
+      			<div class="button_answer">
+      				<button type="submit">解答する</button>
+      			</div>
       		{% endif %}
     	</form>
     	
@@ -47,20 +49,24 @@
       		
       		<h4>解説</h4>
       		<p>{{ question.explanation }}</p>
-    	{% endif %}
     	
-    	<br>
-
-		{% if not is_last_question %}
-			{% if next_question_id %}
-		        <a href="{% url 'ba:answer_question' pk=next_question_id %}" class="btn btn-primary">次の問題に進む</a>
-		    {% endif %}
-		{% else %}
-		    {% if final_score %}
-                <a href="{% url 'ba:result' final_score.pk %}" class="btn btn-primary">終了する</a>
-            {% else %}
-                
-            {% endif %}
+    	
+	    	<br>
+	
+			{% if not is_last_question %}
+				{% if next_question_id %}
+					<div class="button_next">
+			        	<a href="{% url 'ba:answer_question' pk=next_question_id %}">次の問題</a>
+			        </div>
+			    {% endif %}
+			{% else %}
+			    {% if final_score %}
+	                <a href="{% url 'ba:result' final_score.pk %}" class="btn btn-primary">終了する</a>
+	            {% else %}
+	                
+	            {% endif %}
+			{% endif %}
+		
 		{% endif %}
 
         <br><br>

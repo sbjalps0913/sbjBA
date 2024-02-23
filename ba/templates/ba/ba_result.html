@@ -25,14 +25,19 @@
         </ul>
 	    
 	    <br><br>
-        <a href="{% url 'ba:start_question' pk=score.question_set.pk %}" class="btn btn-primary">問題集を解く</a>
+	    <div class="button_line0021">
+        	<a href="{% url 'ba:start_question' pk=score.question_set.pk %}">もう1度解く</a>
+	    </div>
 	    
 	    <br><br>
-	    <a href="{% url 'ba:result_list' %}" class="btn btn-secondary">テスト結果一覧</a>
+	    <div class="button_line002">
+	    	<a href="{% url 'ba:result_list' %}">テスト結果一覧</a>
+	    </div>
 	    
 	    <br><br>
-	    <a href="{% url 'ba:questionset_list' %}" class="btn btn-secondary">問題集一覧</a>
-	    
+	    <div class="button_line002">
+	    	<a href="{% url 'ba:questionset_list' %}">問題集一覧</a>
+	    </div>
 	    
 	    
 	    <br><br>

@@ -10,19 +10,24 @@
     	<p>ユーザ名とパスワードを入力してください</p>
       	{% csrf_token %}
       	{{ form.as_p }}
-      	<button type="submit" class="btn btn-primary">ログイン</button>
+      	<br>
+      	<div class="button_line004">
+      		<button type="submit">ログイン</button>
+      	</div>
       	
       	<br><br>
       	<p style="color: black;">はじめて利用する方↓</p>
-      	<a href="{% url 'ba:register' %}">新規登録</a>
+      	<div class="button_line002">
+      		<a href="{% url 'ba:register' %}">新規登録</a>
+      	</div>
+      	
+      	{#<p><a href="{% url 'ba:home' %}">パスワードを忘れた方はこちら</a></p>#}
       	
       	<br><br><br>
-      	<p><a href="{% url 'ba:home' %}">パスワードを忘れた方はこちら</a></p>
-      	
-      	<br>
       	<div class="button_line006">
       		<a href="{% url 'ba:start' %}">戻る</a>
       	</div>
   	</div>
   	</form>
+  	<br><br>
 {% endblock %}
