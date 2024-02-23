@@ -17,7 +17,7 @@ body {
 /* ○と×のスタイル */
 li span {
     font-size: 20px;
-    margin-right: 5px; /* ○と×の間隔を調整 */
+    margin-right: 0px; /* ○と×の間隔を調整 */
 }
 
 # 解答の正誤による色の変化
@@ -389,6 +389,95 @@ li span {
 }
 
 
+# 問題集一覧画面における問題集のボタン
+.button_questionset {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_questionset a {
+    background: #eee;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 240px;
+    padding: 10px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 500;
+    z-index:0;
+    border-left: solid 5px #000;
+    text-decoration: none; /* リンクの下線を削除 */
+}
+.button_questionset a:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    display: block;
+    background: #000;
+    transition: .3s;
+    left:0;
+}
+.button_questionset a:hover {
+    color: #FFF;
+}
+.button_questionset a:hover:before {
+    width: 100%;
+    z-index: -1;
+}
+
+
+# 「詳細を見る」ボタン
+.button_detail {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+}
+.button_detail a {
+    background: #eee;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 220px;
+    padding: 5px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 500;
+    transform: skew(-10deg, 0deg);
+    text-decoration: none; /* リンクの下線を削除 */
+}
+.button_detail a span {
+    transform: skewX(10deg);
+}
+.button_detail a:before {
+    content: "";
+    width: 35px;
+    height: 2px;
+    position: absolute;
+    right: -20px;
+    background: #313131;
+    top: 35%;
+    transition: 0.3s ease-in-out;
+}
+.button_detail a:after {
+    content: "";
+    width: 20px;
+    height: 2px;
+    position: absolute;
+    right: -5px;
+    background: #313131;
+    top: 55%;
+    transition: 0.3s ease-in-out;
+}
+.button_detail a:hover:before, 
+.button_detail a:hover:after {
+    transform: translateX(5px);
+}
 
 
 

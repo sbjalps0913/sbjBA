@@ -8,7 +8,9 @@
         {% if question_sets %}
             <ul>
                 {% for question_set in question_sets %}
-                    <li><a href="{% url 'ba:start_question' question_set.pk %}">{{ question_set.title }}</a></li>
+                	<div class="button_questionset">
+                    	<a href="{% url 'ba:start_question' question_set.pk %}">{{ question_set.title }}</a>
+                    </div>
                 {% endfor %}
             </ul>
         {% else %}

@@ -12,15 +12,21 @@
 	                <th>受験回数</th>
 	                <th>得点</th>
 	                <th>受験日時</th>
+	                <th></th>
 	            </tr>
 	        </thead>
 	        <tbody>
 	            {% for score in scores %}
 			       	<tr>
-		                <td><a href="{% url 'ba:result' pk=score.pk %}">{{ score.question_set }}</a></td>
+		                <td>{{ score.question_set }}</td>
 		                <td>{{ score.times }}回目</td>
 		                <td>{{ score.rate }}</td>
 		                <td>{{ score.date }}</td>
+		                <td>
+		                	<div class="button_detail">
+		                		<a href="{% url 'ba:result' pk=score.pk %}">詳細を見る</a>
+		                	</div>
+		                </td>
 		            </tr>
 	            {% empty %}
 		            <tr>

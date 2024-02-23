@@ -15,11 +15,11 @@
     	
     	<br><br>
     	<h3>問題</h3>
-    	<ul>
+    	<ol>
     		{% for question in questions %}
-    			<li><a href="{% url 'ba:user_question_detail' question.pk %}">{{ question.text }}</a></li>
+    			<li><a href="{% url 'ba:user_question_detail' question.pk %}" style="color: black;">{{ question.text }}</a></li>
     		{% endfor %}
-    	</ul>
+    	</ol>
     	
     	<br><br>
     	<h3>過去のテスト結果</h3>
@@ -36,7 +36,11 @@
                     <tr>
                         <td>{{ result.date }}</td>
                         <td>{{ result.rate }}</td>
-                        <td><a href="{% url 'ba:result' pk=result.pk %}">詳細を見る</a></td>
+                        <td>
+                        	<div class="button_detail">
+                        		<a href="{% url 'ba:result' pk=result.pk %}">詳細を見る</a>
+                        	</div>
+                        </td>
                     </tr>
                 {% empty %}
                     <tr>
