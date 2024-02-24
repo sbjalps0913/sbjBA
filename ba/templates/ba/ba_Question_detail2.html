@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %} 問題詳細 {% endblock %}
+
+{% block main %}
+  	<div class="container mt-5">
+    	<h2>{{ object.text }}</h2>
+    	{#<p>問題文: {{ object.text }}</p>#}
+    	<p><strong>解説:</strong> {{ object.explanation }}</p>
+    	
+    	<h3>選択肢</h3>
+    	{% if question.is_multi %}
+	    	<p>（複数選択問題）</p>
+	    {% endif %}
+    	<ul>
+    		{% for option in object.option_set.all %}
+    			<li>{{ option.text }} {% if option.is_correct %}(正解){% endif %}</li>
+    		{% endfor %}
+    	</ul>
+		
+		<br><br>
+		<div class="button_line006">
+	    	<a href="{% url 'ba:question_list' %}">戻る</a>
+	    </div>
+  	</div>
+{% endblock %}

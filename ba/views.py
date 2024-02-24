@@ -129,6 +129,17 @@ class QuestionDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         # 他のコンテキストデータを必要に応じて追加
         return context
+    
+
+# 問題詳細画面(問題一覧からの遷移用)
+class QuestionDetailView2(LoginRequiredMixin, DetailView):
+    model = Question
+    template_name = 'ba/ba_Question_detail2.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # 他のコンテキストデータを必要に応じて追加
+        return context
 
 
 # 問題解答画面
@@ -365,6 +376,16 @@ class ResultListView(ListView):
     model = FinalScore
     template_name = 'ba/ba_result_list.html'
     context_object_name = 'scores'
+    
+    
+# 問題一覧画面
+class QuestionListView(ListView):
+    model = Question
+    template_name = 'ba/ba_question_list.html'
+    context_object_name = 'questions'
+    paginate_by = 25    # 1ページ当たりに表示される項目数
+    
+
     
 # コーヒー豆一覧画面
 class BeanListView(ListView):

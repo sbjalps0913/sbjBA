@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %} 問題一覧 {% endblock %}
+
+{% block main %}
+  	<div class="container mt-5">
+    	<h2>問題一覧</h2>
+    	
+    	<table class="table">
+            <thead>
+                <tr>
+                    <th>問題文</th>
+                    <th>問題集</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions %}
+                    <tr>
+                        <td>{{ question.text }}</td>
+                        <td>{{ question.question_set.title }}</td>
+                        <td>
+                        	<div class="button_detail">
+                        		<a href="{% url 'ba:user_question_detail2' question.pk %}">詳細を見る</a>
+                        	</div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2">問題がありません。</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    	
+    	<br><br>
+    	<div class="button_line006">
+    		<a href="{% url 'ba:home' %}">戻る</a>
+    	</div>
+    	<br><br>
+  	</div>
+{% endblock %}
