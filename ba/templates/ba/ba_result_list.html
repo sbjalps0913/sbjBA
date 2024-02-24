@@ -20,7 +20,9 @@
 			       	<tr>
 		                <td>{{ score.question_set }}</td>
 		                <td>{{ score.times }}回目</td>
-		                <td>{{ score.rate }}</td>
+		                <td {% if score.rate <= 30 %}style="color: red;" {% elif score.rate >= 80 %}style="color: #228b22; font-size: 18px;" {% endif %}>
+						    {{ score.rate }}
+						</td>
 		                <td>{{ score.date }}</td>
 		                <td>
 		                	<div class="button_detail">

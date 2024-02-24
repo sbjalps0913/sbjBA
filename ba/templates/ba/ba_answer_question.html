@@ -4,7 +4,8 @@
 
 {% block main %}
   	<div class="container mt-5">
-    	<h2>問題{{ current_question_number }}: {{ question.text }}</h2>
+    	<h2>問題{{ current_question_number }}</h2>
+    	<p><span style="font-size: 18px">{{ question.text }}</span></p>
     	<form method="post">
       		{% csrf_token %}
       		{% for option in options %}
@@ -31,21 +32,26 @@
     			<p class="incorrect-answer">{{ result }}</p>
     		{% endif %}
     		
-      		<p>現在の得点: {{ score }}</p>
+      		<p>現在の正解数： {{ score }} / {{ current_question_number }}</p>
       		<br>
       		<h4>正解</h4>
-      		<ul>
-			    {% for option in correct_options %}
-			      	<li>{{ option.text }}</li>
-			    {% endfor %}
-			</ul>
+      		<span style="color: #ff6347; font-size: 20px;">
+	      		<ul>
+				    {% for option in correct_options %}
+				      	<li>{{ option.text }}</li>
+				    {% endfor %}
+				</ul>
+			</span>
       		<br>
-      		<p>あなたの解答：</p>
-      		<ul>
-		        {% for option in selected_options %}
-		            <li>{{ option.text }}</li>
-		        {% endfor %}
-		    </ul>
+      		
+      		<span style="color: #a9a9a9; font-size: 13px;">
+	      		<p>あなたの解答：</p>
+	      		<ul>
+			        {% for option in selected_options %}
+			            <li>{{ option.text }}</li>
+			        {% endfor %}
+			    </ul>
+		    </span>
       		
       		<h4>解説</h4>
       		<p>{{ question.explanation }}</p>

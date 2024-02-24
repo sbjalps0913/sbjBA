@@ -155,7 +155,6 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         context['is_last_question'] = self.is_last_question()
         context['next_question_id'] = self.get_next_question_pk()
         context['current_question_number'] = self.get_current_question_number()
-        context['score'] = self.get_current_score().score
         
         # 現在の問題の正解の選択肢を取得
         correct_options = Option.objects.filter(question=self.question, is_correct=True)
@@ -213,6 +212,8 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         context['result'] = result
         #context['selected_option'] = selected_option.text
         context['selected_options'] = selected_options
+        
+        context['score'] = self.get_current_score().score
         
         # 問題集の全ての問題に回答済みの場合、FinalScoreオブジェクトを作成
         context['final_score'] = self.create_final_score()
@@ -348,12 +349,13 @@ class ResultView(DetailView):
             question_results[question_text] = {'result': result, 'correct_flag': correct_flag}
 
         context['question_results'] = question_results
-        print(question_results)
         
         rate = int((score.score / question_count) * 100)
         score.rate = rate
         #print(rate)
         score.save()
+        
+        context['rate'] = rate
         
         return context
 
@@ -395,8 +397,8 @@ class BeanSearchView(ListView):
             # コーヒー名またはスリーレターに一致するコーヒー豆をフィルタリングして返す
             return Bean.objects.filter(name__icontains=query) | Bean.objects.filter(three_letters__icontains=query)
         else:
-            # クエリが空白の場合はすべてのコーヒー豆を返す
-            return Bean.objects.all()
+            # クエリが空白の場合はローストレベルの昇順にソートしてすべてのコーヒー豆を返す
+            return Bean.objects.order_by('roast')
             
     
     
