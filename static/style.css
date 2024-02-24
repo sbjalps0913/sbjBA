@@ -32,6 +32,20 @@ li span {
 }
 
 
+# コーヒーパスポートにおけるリンク
+.custom-link {
+	color: black;
+}
+.custom-link:hover {
+	color: black;
+    text-decoration: underline; /* カーソルがリンク上にあるときに下線を表示 */
+}
+.custom-link:not(:hover) {
+	color: black;
+    text-decoration: none;	/* カーソルがリンク外のときは下線を非表示 */
+}
+
+
 
 # メニュー選択
 .button_line1 {

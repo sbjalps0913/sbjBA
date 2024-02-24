@@ -6,6 +6,16 @@
   	<div class="container mt-5">
     	<h2>問題一覧</h2>
     	
+    	<form method="get" action="{% url 'ba:question_list' %}">
+    		<div class="input-group mb-3">
+			    <input type="text" name="q" class="form-control" placeholder="検索したい問題を入力">
+			    <div class="input-group-append">
+			    	<button type="submit" class="btn btn-outline-dark">検索</button>
+			    </div>
+		    </div>
+		</form>
+    	
+    	<br>
     	<table class="table">
             <thead>
                 <tr>

@@ -326,7 +326,7 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
             
 
 # スコア結果画面
-class ResultView(DetailView):
+class ResultView(LoginRequiredMixin, DetailView):
     model = FinalScore
     template_name = 'ba/ba_result.html'
     context_object_name = 'score'
@@ -372,23 +372,51 @@ class ResultView(DetailView):
 
 
 # スコア結果一覧画面
-class ResultListView(ListView):
+class ResultListView(LoginRequiredMixin, ListView):
     model = FinalScore
     template_name = 'ba/ba_result_list.html'
     context_object_name = 'scores'
     
     
 # 問題一覧画面
-class QuestionListView(ListView):
+class QuestionListView(LoginRequiredMixin, ListView):
     model = Question
     template_name = 'ba/ba_question_list.html'
     context_object_name = 'questions'
     paginate_by = 25    # 1ページ当たりに表示される項目数
     
+    '''
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Question.objects.filter(text__icontains=query)
+        else:
+            return Question.objects.all()
+    '''
+    
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        
+        if query:  # 検索クエリがある場合
+            # 問題文または問題集名にクエリが含まれる問題をフィルタリング
+            queryset = Question.objects.filter(text__icontains=query)
+        else:  # 検索クエリがない場合は全ての問題を表示
+            queryset = Question.objects.all()
+        
+        # 問題集ごとにグループ化し、それぞれのグループ内で問題をソート
+        question_sets = QuestionSet.objects.all()
+        sorted_questions = []
+
+        for question_set in question_sets:
+            questions = queryset.filter(question_set=question_set).order_by('pk')  # 問題をID順にソート
+            sorted_questions.extend(questions)
+
+        return sorted_questions
+    
 
     
 # コーヒー豆一覧画面
-class BeanListView(ListView):
+class BeanListView(LoginRequiredMixin, ListView):
     model = Bean
     template_name = 'ba/ba_bean_list.html'
     context_object_name = 'beans'
@@ -399,14 +427,14 @@ class BeanListView(ListView):
 
 
 # コーヒー豆詳細画面
-class BeanDetailView(DetailView):
+class BeanDetailView(LoginRequiredMixin, DetailView):
     model = Bean
     template_name = 'ba/ba_bean_detail.html'
     context_object_name = 'bean'
     
     
 # コーヒー豆検索用ビュー
-class BeanSearchView(ListView):
+class BeanSearchView(LoginRequiredMixin, ListView):
     model = Bean
     template_name = 'ba/ba_bean_list.html'
     context_object_name = 'beans'

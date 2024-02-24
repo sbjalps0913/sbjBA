@@ -17,7 +17,7 @@
     	<h3>問題</h3>
     	<ol>
     		{% for question in questions %}
-    			<li><a href="{% url 'ba:user_question_detail' question.pk %}" style="color: black;">{{ question.text }}</a></li>
+    			<li><a href="{% url 'ba:user_question_detail' question.pk %}" class="custom-link">{{ question.text }}</a></li>
     		{% endfor %}
     	</ol>
     	
