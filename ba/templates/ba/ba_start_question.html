@@ -14,12 +14,18 @@
     	</form>
     	
     	<br><br>
-    	<h3>問題</h3>
-    	<ol>
-    		{% for question in questions %}
-    			<li><a href="{% url 'ba:user_question_detail' question.pk %}" class="custom-link">{{ question.text }}</a></li>
-    		{% endfor %}
-    	</ol>
+    	<div class="button_show">
+    		<button id="toggleQuestionsButton">問題を表示</button>
+    	</div>
+    	<br><br>
+    	<div id="questionList" style="display: none;">
+	    	<h3>問題</h3>
+	    	<ol>
+	    		{% for question in questions %}
+	    			<li><a href="{% url 'ba:user_question_detail' question.pk %}" class="custom-link">{{ question.text }}</a></li>
+	    		{% endfor %}
+	    	</ol>
+    	</div>
     	
     	<br><br>
     	<h3>過去のテスト結果</h3>
@@ -58,4 +64,19 @@
     	</div>
     	<br><br>
   	</div>
+  	
+  	<script>
+  		const toggleQuestionsButton = document.getElementById('toggleQuestionsButton');
+  		const questionList = document.getElementById('questionList');
+  		
+  		toggleQuestionsButton.addEventListener('click', function() {
+  			if (questionList.style.display === 'none') {
+  				questionList.style.display = 'block';
+  				toggleQuestionsButton.textContent = '問題の非表示';
+  			} else {
+  				questionList.style.display = 'none';
+  				toggleQuestionsButton.textContent = '問題を表示';
+  			}
+  		});
+  	</script>
 {% endblock %}

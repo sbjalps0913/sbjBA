@@ -32,7 +32,7 @@ li span {
 }
 
 
-# コーヒーパスポートにおけるリンク
+# リンク
 .custom-link {
 	color: black;
 }
@@ -45,6 +45,16 @@ li span {
     text-decoration: none;	/* カーソルがリンク外のときは下線を非表示 */
 }
 
+
+/* 偶数行の背景色を設定 */
+.table-striped tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* 奇数行の背景色を設定 */
+.table-striped tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
 
 
 # メニュー選択
@@ -167,7 +177,7 @@ li span {
 	content: '';
 	width: 18px;
 	height: 18px;
-	border-color: #000;
+	border-color: #313131;
 	box-sizing: border-box;
 	border-style :solid;
 	display: block;
@@ -189,12 +199,12 @@ li span {
 .button_line004 button:hover:after {
 	width: calc(100% + 12px);
 	height: calc(100% + 12px);
-	border-color: #000;
+	border-color: #313131;
 }
 .button_line004 button:hover {
 	color: #fff;
-	background-color: #000;
-	border-color: #000;
+	background-color: #313131;
+	border-color: #313131;
 }
 
 
@@ -285,7 +295,7 @@ li span {
     max-width: 240px;
     padding: 10px 25px;
     color: #fff; /* ホバー前の文字色を白に設定 */
-    background-color: #000; /* ホバー前の背景色を黒に設定 */
+    background-color: #313131; /* ホバー前の背景色を黒に設定 */
     transition: 0.3s ease-in-out;
     font-weight: 500;
     border: none;
@@ -293,7 +303,7 @@ li span {
 
 .button_answer button:hover {
     color: #000; /* ホバー後の文字色を黒に設定 */
-    background-color: #fff; /* ホバー後の背景色を白に設定 */
+    background-color: transparent; /* ホバー後の背景色を白に設定 */
 }
 
 .button_answer button::before {
@@ -422,7 +432,7 @@ li span {
     transition: 0.3s ease-in-out;
     font-weight: 500;
     z-index:0;
-    border-left: solid 5px #000;
+    border-left: solid 5px #313131;
     text-decoration: none; /* リンクの下線を削除 */
 }
 .button_questionset a:before {
@@ -432,7 +442,7 @@ li span {
     bottom: 0;
     width: 0;
     display: block;
-    background: #000;
+    background: #313131;
     transition: .3s;
     left:0;
 }
@@ -494,6 +504,29 @@ li span {
 }
 
 
+# 「問題を表示」ボタン
+.button_show {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_show  button {
+    background: #d3d3d3;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 240px;
+    padding: 10px 25px;
+    color: #000;
+    transition: 0.3s ease-in-out;
+    //clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+}
+.button_show button:hover {
+    background: #313131;
+    color: #FFF;
+}
 
 
 
