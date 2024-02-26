@@ -27,36 +27,42 @@
 	    	</ol>
     	</div>
     	
+    	<br>
+    	<div class="button_show">
+    		<button id="toggleResultsButton">過去のテスト結果を表示</button>
+    	</div>
     	<br><br>
-    	<h3>過去のテスト結果</h3>
-    	<table class="table" border="1">
-            <thead>
-                <tr>
-                    <th>受験日時</th>
-                    <th>得点</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for result in past_results %}
-                    <tr>
-                        <td>{{ result.date }}</td>
-                        <td {% if result.rate <= 30 %}style="color: red;" {% elif result.rate >= 80 %}style="color: #228b22; font-size: 18px;" {% endif %}>
-						    {{ result.rate }}
-						</td>
-                        <td>
-                        	<div class="button_detail">
-                        		<a href="{% url 'ba:result' pk=result.pk %}">詳細を見る</a>
-                        	</div>
-                        </td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="3">過去の試験結果はありません。</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    	<div id="resultList" style="display: none;">
+	    	<h3>過去のテスト結果</h3>
+	    	<table class="table" border="1">
+	            <thead>
+	                <tr>
+	                    <th>受験日時</th>
+	                    <th>得点</th>
+	                    <th></th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                {% for result in past_results %}
+	                    <tr>
+	                        <td>{{ result.date }}</td>
+	                        <td {% if result.rate <= 30 %}style="color: red;" {% elif result.rate >= 80 %}style="color: #228b22; font-size: 18px;" {% endif %}>
+							    {{ result.rate }}
+							</td>
+	                        <td>
+	                        	<div class="button_detail">
+	                        		<a href="{% url 'ba:result' pk=result.pk %}">詳細を見る</a>
+	                        	</div>
+	                        </td>
+	                    </tr>
+	                {% empty %}
+	                    <tr>
+	                        <td colspan="3">過去の試験結果はありません。</td>
+	                    </tr>
+	                {% endfor %}
+	            </tbody>
+	        </table>
+        </div>
     	
     	<br><br>
     	<div class="button_line006">
@@ -67,7 +73,9 @@
   	
   	<script>
   		const toggleQuestionsButton = document.getElementById('toggleQuestionsButton');
+  		const toggleResultsButton = document.getElementById('toggleResultsButton');
   		const questionList = document.getElementById('questionList');
+  		const resultList = document.getElementById('resultList');
   		
   		toggleQuestionsButton.addEventListener('click', function() {
   			if (questionList.style.display === 'none') {
@@ -76,6 +84,16 @@
   			} else {
   				questionList.style.display = 'none';
   				toggleQuestionsButton.textContent = '問題を表示';
+  			}
+  		});
+  		
+  		toggleResultsButton.addEventListener('click', function() {
+  			if (resultList.style.display === 'none') {
+  				resultList.style.display = 'block';
+  				toggleResultsButton.textContent = '過去のテスト結果を非表示';
+  			} else {
+  				resultList.style.display = 'none';
+  				toggleResultsButton.textContent = '過去のテスト結果を表示';
   			}
   		});
   	</script>
