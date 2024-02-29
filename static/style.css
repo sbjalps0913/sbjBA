@@ -529,6 +529,32 @@ li span {
 }
 
 
+# 「テスト結果の削除」ボタン
+.button_delete {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_delete button {
+    background: #313131;
+    border-radius: 50px;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 260px;
+    padding: 10px 25px;
+    color: #fff;
+    transition: 0.1s ease-in-out;
+    font-weight: 500;
+    border: none;
+}
+.button_delete button:hover {
+    background: #ff4500;
+    color: #FFF;
+}
+
 
 
 

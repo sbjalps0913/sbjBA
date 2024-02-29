@@ -6,6 +6,7 @@
     <div class="container mt-5">
         <h2>テスト結果</h2>
         <p>得点が80点以上のものは<span style="color: #228b22; font-size: 20px;">緑色</span>、30点以下のものは<span style="color: red; font-size: 20px;">赤色</span>で表示されます</p>
+        
         <form id="deleteForm" method="post" action="{% url 'ba:delete_result' %}">
             {% csrf_token %}
             <table class="table" border="1">
@@ -30,10 +31,10 @@
                             <td>{{ score.date }}</td>
                             <td>
                                 <div class="button_detail">
-                                    <a href="{% url 'ba:result' pk=score.pk %}">詳細を見る</a>
+                                    <a href="{% url 'ba:result' pk=score.pk %}">詳細</a>
                                 </div>
                             </td>
-                            <td><input type="checkbox" name="result_ids[]" value="{{ score.pk }}"></td>
+                            <td><input type="checkbox" style="accent-color: #f00;" name="result_ids[]" value="{{ score.pk }}"></td>
                         </tr>
                     {% empty %}
                         <tr>
@@ -42,7 +43,10 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <button type="submit" id="deleteButton" disabled>テスト結果の削除</button>
+            <br>
+	        <div class="button_delete">
+	        	<button type="submit" id="deleteButton" disabled>テスト結果の削除</button>
+	        </div>
         </form>
         
         <br><br>

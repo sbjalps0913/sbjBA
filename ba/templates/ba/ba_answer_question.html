@@ -10,7 +10,7 @@
       		{% csrf_token %}
       		{% for option in options %}
         		{% if question.is_multi %}
-		            <input type="checkbox" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
+		            <input type="checkbox" style="accent-color: #000;" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
 		        {% else %}
 		            <input type="radio" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
 		        {% endif %}
