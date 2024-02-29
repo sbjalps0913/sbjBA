@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.views import View
+from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import DeleteView
@@ -11,6 +12,8 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
+import json
+from django.http import JsonResponse
 
 from .models import UserProfile, QuestionSet, Question, Option, Bean, Score, FinalScore, Answer
 from .forms import UpdateBeanForm, RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm, CreateBeanForm
@@ -376,6 +379,70 @@ class ResultListView(LoginRequiredMixin, ListView):
     model = FinalScore
     template_name = 'ba/ba_result_list.html'
     context_object_name = 'scores'
+    
+    
+# スコア結果削除確認画面
+class DeleteResultView(View):
+    model = FinalScore
+    template_name = 'ba/ba_delete_result.html'
+    success_url = reverse_lazy('ba:result_list')
+
+    def post(self, request, *args, **kwargs):
+        result_ids = request.POST.getlist('result_ids[]')
+        print("Result IDs received in POST:", result_ids)  # デバッグ用
+        if result_ids:
+            # テスト結果を削除
+            FinalScore.objects.filter(pk__in=result_ids).delete()
+            # リダイレクト先のURLにリダイレクト
+            return redirect(self.success_url)
+        else:
+            # result_idsが空の場合は何もせずにリダイレクト
+            return redirect(self.success_url)
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        result_ids = self.request.POST.getlist('result_ids[]')
+        results = FinalScore.objects.filter(pk__in=result_ids)
+        context['results'] = results
+        return context
+    
+       
+''' 
+class DeleteResultView(DeleteView):
+    model = FinalScore
+    template_name = 'ba/ba_delete_result.html'
+    success_url = reverse_lazy('ba:result_list')
+
+    def post(self, request, *args, **kwargs):
+        result_ids = request.POST.getlist('result_ids[]')
+        print("Result IDs received in POST:", result_ids)  # デバッグ用
+        if result_ids:
+            results = FinalScore.objects.filter(pk__in=result_ids)
+            return render(request, self.template_name, {'results': results})
+        else:
+            return HttpResponseRedirect(self.success_url)
+
+    def delete(self, request, *args, **kwargs):
+        result_ids = request.POST.getlist('result_ids[]')
+        print("Result IDs to delete:", result_ids)  # デバッグ用
+        if result_ids:
+            FinalScore.objects.filter(pk__in=result_ids).delete()
+        return super().delete(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        result_ids = self.request.POST.getlist('result_ids[]')
+        results = FinalScore.objects.filter(pk__in=result_ids)
+        context['results'] = results
+        return context
+'''
+'''
+class DeleteResultView(DeleteView):
+    model = FinalScore
+    template_name = 'ba/ba_delete_result.html'
+    success_url = reverse_lazy('ba:result_list')
+'''
     
     
 # 問題一覧画面

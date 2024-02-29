@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} テスト結果削除確認 {% endblock %}
+
+{% block main %}
+    <div class="container mt-5">
+        <h2>テスト結果削除確認</h2>
+        <p>以下のテスト結果を削除します。よろしいですか？</p>
+        <ul>
+            {% for result in results %}
+                <li>{{ result }}</li>
+            {% endfor %}
+        </ul>
+        <form id="deleteForm" method="post" action="{% url 'ba:delete_result' %}">
+            {% csrf_token %}
+            <input type="hidden" name="result_ids[]" value="{{ result_ids }}">
+            <button type="submit">削除</button>
+            <a href="{% url 'ba:result_list' %}">キャンセル</a>
+        </form>
+    </div>
+{% endblock %}

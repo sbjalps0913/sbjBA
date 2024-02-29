@@ -3,47 +3,78 @@
 {% block title %} テスト結果一覧 {% endblock %}
 
 {% block main %}
-	<div class="container mt-5">
-	  	<h2>テスト結果</h2>
-	  	<p>得点が80点以上のものは<span style="color: #228b22; font-size: 20px;">緑色</span>、30点以下のものは<span style="color: red; font-size: 20px;">赤色</span>で表示されます</p>
-	  	<table class="table" border="1">
-	        <thead>
-	            <tr>
-	                <th>問題集</th>
-	                <th>受験回数</th>
-	                <th>得点</th>
-	                <th>受験日時</th>
-	                <th></th>
-	            </tr>
-	        </thead>
-	        <tbody>
-	            {% for score in scores %}
-			       	<tr>
-		                <td>{{ score.question_set }}</td>
-		                <td>{{ score.times }}回目</td>
-		                <td {% if score.rate <= 30 %}style="color: red;" {% elif score.rate >= 80 %}style="color: #228b22; font-size: 18px;" {% endif %}>
-						    {{ score.rate }}
-						</td>
-		                <td>{{ score.date }}</td>
-		                <td>
-		                	<div class="button_detail">
-		                		<a href="{% url 'ba:result' pk=score.pk %}">詳細を見る</a>
-		                	</div>
-		                </td>
-		            </tr>
-	            {% empty %}
-		            <tr>
-		                <td colspan="3">テスト結果がありません。</td>
-		            </tr>
-	            {% endfor %}
-	        </tbody>
-	    </table>
-	  	
-	  	<br><br>
-	  	<div class="button_line006">
-	  		<a href="{% url 'ba:home' %}">ホームに戻る</a>
-	  	</div>
-	  	
-	  	<br><br>
-	</div>
+    <div class="container mt-5">
+        <h2>テスト結果</h2>
+        <p>得点が80点以上のものは<span style="color: #228b22; font-size: 20px;">緑色</span>、30点以下のものは<span style="color: red; font-size: 20px;">赤色</span>で表示されます</p>
+        <form id="deleteForm" method="post" action="{% url 'ba:delete_result' %}">
+            {% csrf_token %}
+            <table class="table" border="1">
+                <thead>
+                    <tr>
+                        <th>問題集</th>
+                        <th>受験回数</th>
+                        <th>得点</th>
+                        <th>受験日時</th>
+                        <th></th>
+                        <th>削除</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score in scores %}
+                        <tr>
+                            <td>{{ score.question_set }}</td>
+                            <td>{{ score.times }}回目</td>
+                            <td {% if score.rate <= 30 %}style="color: red;" {% elif score.rate >= 80 %}style="color: #228b22; font-size: 18px;" {% endif %}>
+                                {{ score.rate }}
+                            </td>
+                            <td>{{ score.date }}</td>
+                            <td>
+                                <div class="button_detail">
+                                    <a href="{% url 'ba:result' pk=score.pk %}">詳細を見る</a>
+                                </div>
+                            </td>
+                            <td><input type="checkbox" name="result_ids[]" value="{{ score.pk }}"></td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">テスト結果がありません。</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" id="deleteButton" disabled>テスト結果の削除</button>
+        </form>
+        
+        <br><br>
+        <div class="button_line006">
+            <a href="{% url 'ba:home' %}">ホームに戻る</a>
+        </div>
+        
+        <br><br>
+    </div>
+
+    <script>
+        const deleteForm = document.getElementById('deleteForm');
+        const deleteButton = document.getElementById('deleteButton');
+        const checkboxes = document.querySelectorAll('input[name="result_ids[]"]');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    deleteButton.removeAttribute('disabled');
+                } else {
+                    let allUnchecked = true;
+                    checkboxes.forEach(cb => {
+                        if (cb.checked) {
+                            allUnchecked = false;
+                        }
+                    });
+                    if (allUnchecked) {
+                        deleteButton.setAttribute('disabled', 'disabled');
+                    }
+                }
+            });
+        });
+
+    </script>
 {% endblock %}
