@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.views import View
+from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import DeleteView
@@ -11,8 +12,10 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
+import json
+from django.http import JsonResponse
 
-from .models import UserProfile, QuestionSet, Question, Option, Bean, Score, FinalScore
+from .models import UserProfile, QuestionSet, Question, Option, Bean, Score, FinalScore, Answer
 from .forms import UpdateBeanForm, RegisterForm, CreateQuestionSetForm, CreateQuestionForm, OptionForm, UpdateQuestionSetForm, UpdateQuestionForm, UpdateOptionForm, CreateBeanForm
 from .forms import AnswerQuestionForm
 
@@ -113,6 +116,10 @@ class StartQuestionView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['question_set'] = self.object
         context['questions'] = Question.objects.filter(question_set=self.object)
+        
+        # 過去の試験結果を取得
+        past_results = FinalScore.objects.filter(user=self.request.user, question_set=self.object).order_by('-date')
+        context['past_results'] = past_results
         return context
 
 
@@ -120,6 +127,17 @@ class StartQuestionView(LoginRequiredMixin, DetailView):
 class QuestionDetailView(LoginRequiredMixin, DetailView):
     model = Question
     template_name = 'ba/ba_Question_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # 他のコンテキストデータを必要に応じて追加
+        return context
+    
+
+# 問題詳細画面(問題一覧からの遷移用)
+class QuestionDetailView2(LoginRequiredMixin, DetailView):
+    model = Question
+    template_name = 'ba/ba_Question_detail2.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -151,27 +169,53 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         context['is_last_question'] = self.is_last_question()
         context['next_question_id'] = self.get_next_question_pk()
         context['current_question_number'] = self.get_current_question_number()
-        context['score'] = self.get_current_score().score
         
         # 現在の問題の正解の選択肢を取得
-        correct_option = Option.objects.filter(question=self.question, is_correct=True).first()
-        if correct_option:
-            context['correct_option'] = correct_option.text
+        correct_options = Option.objects.filter(question=self.question, is_correct=True)
+        if correct_options.exists():
+            context['correct_options'] = correct_options
         else:
-            context['correct_option'] = '正解の選択肢はありません'
+            context['correct_options'] = '正解の選択肢がありません'
         
         return context
 
     def form_valid(self, form):
-        selected_option_id = form.cleaned_data['answer']
-        selected_option = Option.objects.get(pk=selected_option_id)
-        if selected_option.is_correct:
+        context = self.get_context_data(form=form)
+        
+        selected_option_ids = form.cleaned_data['answer']    # 複数選択肢の場合、複数の選択肢がリストとして返される
+        selected_option_ids = [int(id) for id in selected_option_ids]
+        selected_options = Option.objects.filter(pk__in=selected_option_ids)
+        
+        correct_options = Option.objects.filter(question=self.question, is_correct=True)
+        #print("解答",selected_option_ids)
+        #print("正解",correct_options.values_list('id', flat=True))
+        
+        is_correct = set(selected_option_ids) == set(correct_options.values_list('id', flat=True))
+        context['is_correct'] = is_correct
+        
+        result = '正解' if is_correct else '不正解'
+        
+        '''
+        if selected_options.is_correct:
             result = '正解'
             
             # 正解の場合は得点を加算する
             self.add_score()
         else:
             result = '不正解'
+        '''
+        
+        # ユーザーの解答を保存
+        user_answer = Answer.objects.create(
+            user=self.request.user,
+            question=self.question,
+            is_correct=is_correct
+        )
+        user_answer.selected_options.set(selected_options)  # 選択された選択肢を保存
+            
+        # 解答が正解なら得点を加算
+        if is_correct:
+            self.add_score()
             
         # 解答した回数をインクリメント
         self.increment_count()    
@@ -179,9 +223,11 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         # 解答が終了した時点で日付を保存
         self.save_completion_date()
         
-        context = self.get_context_data(form=form)
         context['result'] = result
-        context['selected_option'] = selected_option.text
+        #context['selected_option'] = selected_option.text
+        context['selected_options'] = selected_options
+        
+        context['score'] = self.get_current_score().score
         
         # 問題集の全ての問題に回答済みの場合、FinalScoreオブジェクトを作成
         context['final_score'] = self.create_final_score()
@@ -283,7 +329,7 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
             
 
 # スコア結果画面
-class ResultView(DetailView):
+class ResultView(LoginRequiredMixin, DetailView):
     model = FinalScore
     template_name = 'ba/ba_result.html'
     context_object_name = 'score'
@@ -291,34 +337,171 @@ class ResultView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         score = self.get_object()
+        question_set = score.question_set
+        answers = Answer.objects.filter(user=self.request.user, question__question_set=question_set)
+        
         question_count = score.question_set.question_set.count()
         context['question_count'] = question_count
+
+        # 問題ごとの解答結果を格納する辞書を作成
+        question_results = {}
+        for answer in answers:
+            question_text = answer.question.text
+            '''
+            selected_options = set(option.id for option in answer.selected_options.all())
+            correct_options = set(option.id for option in answer.question.options.filter(is_correct=True))
+            '''
+            selected_options = [option.text for option in answer.selected_options.all()]
+            correct_options = [option.text for option in answer.question.option_set.filter(is_correct=True)]
+            
+            if set(selected_options) == set(correct_options):
+                result = '正解'
+                correct_flag = True
+            else:
+                result = '不正解'
+                correct_flag = False
+            question_results[question_text] = {'result': result, 'correct_flag': correct_flag}
+
+        context['question_results'] = question_results
+        
+        rate = int((score.score / question_count) * 100)
+        score.rate = rate
+        #print(rate)
+        score.save()
+        
+        context['rate'] = rate
+        
         return context
 
 
 # スコア結果一覧画面
-class ResultListView(ListView):
+class ResultListView(LoginRequiredMixin, ListView):
     model = FinalScore
     template_name = 'ba/ba_result_list.html'
     context_object_name = 'scores'
     
     
+# スコア結果削除確認画面
+class DeleteResultView(View):
+    model = FinalScore
+    template_name = 'ba/ba_delete_result.html'
+    success_url = reverse_lazy('ba:result_list')
+
+    def post(self, request, *args, **kwargs):
+        result_ids = request.POST.getlist('result_ids[]')
+        print("Result IDs received in POST:", result_ids)  # デバッグ用
+        if result_ids:
+            # テスト結果を削除
+            FinalScore.objects.filter(pk__in=result_ids).delete()
+            # リダイレクト先のURLにリダイレクト
+            return redirect(self.success_url)
+        else:
+            # result_idsが空の場合は何もせずにリダイレクト
+            return redirect(self.success_url)
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        result_ids = self.request.POST.getlist('result_ids[]')
+        results = FinalScore.objects.filter(pk__in=result_ids)
+        context['results'] = results
+        return context
+    
+       
+''' 
+class DeleteResultView(DeleteView):
+    model = FinalScore
+    template_name = 'ba/ba_delete_result.html'
+    success_url = reverse_lazy('ba:result_list')
+
+    def post(self, request, *args, **kwargs):
+        result_ids = request.POST.getlist('result_ids[]')
+        print("Result IDs received in POST:", result_ids)  # デバッグ用
+        if result_ids:
+            results = FinalScore.objects.filter(pk__in=result_ids)
+            return render(request, self.template_name, {'results': results})
+        else:
+            return HttpResponseRedirect(self.success_url)
+
+    def delete(self, request, *args, **kwargs):
+        result_ids = request.POST.getlist('result_ids[]')
+        print("Result IDs to delete:", result_ids)  # デバッグ用
+        if result_ids:
+            FinalScore.objects.filter(pk__in=result_ids).delete()
+        return super().delete(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        result_ids = self.request.POST.getlist('result_ids[]')
+        results = FinalScore.objects.filter(pk__in=result_ids)
+        context['results'] = results
+        return context
+'''
+'''
+class DeleteResultView(DeleteView):
+    model = FinalScore
+    template_name = 'ba/ba_delete_result.html'
+    success_url = reverse_lazy('ba:result_list')
+'''
+    
+    
+# 問題一覧画面
+class QuestionListView(LoginRequiredMixin, ListView):
+    model = Question
+    template_name = 'ba/ba_question_list.html'
+    context_object_name = 'questions'
+    paginate_by = 25    # 1ページ当たりに表示される項目数
+    
+    '''
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Question.objects.filter(text__icontains=query)
+        else:
+            return Question.objects.all()
+    '''
+    
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        
+        if query:  # 検索クエリがある場合
+            # 問題文または問題集名にクエリが含まれる問題をフィルタリング
+            queryset = Question.objects.filter(text__icontains=query)
+        else:  # 検索クエリがない場合は全ての問題を表示
+            queryset = Question.objects.all()
+        
+        # 問題集ごとにグループ化し、それぞれのグループ内で問題をソート
+        question_sets = QuestionSet.objects.all()
+        sorted_questions = []
+
+        for question_set in question_sets:
+            questions = queryset.filter(question_set=question_set).order_by('pk')  # 問題をID順にソート
+            sorted_questions.extend(questions)
+
+        return sorted_questions
+    
+
+    
 # コーヒー豆一覧画面
-class BeanListView(ListView):
+class BeanListView(LoginRequiredMixin, ListView):
     model = Bean
     template_name = 'ba/ba_bean_list.html'
     context_object_name = 'beans'
+    
+    def get_queryset(self):
+        # ローストレベルで昇順にソートされたクエリセットを返す
+        return Bean.objects.order_by('roast')
 
 
 # コーヒー豆詳細画面
-class BeanDetailView(DetailView):
+class BeanDetailView(LoginRequiredMixin, DetailView):
     model = Bean
     template_name = 'ba/ba_bean_detail.html'
     context_object_name = 'bean'
     
     
 # コーヒー豆検索用ビュー
-class BeanSearchView(ListView):
+class BeanSearchView(LoginRequiredMixin, ListView):
     model = Bean
     template_name = 'ba/ba_bean_list.html'
     context_object_name = 'beans'
@@ -330,8 +513,8 @@ class BeanSearchView(ListView):
             # コーヒー名またはスリーレターに一致するコーヒー豆をフィルタリングして返す
             return Bean.objects.filter(name__icontains=query) | Bean.objects.filter(three_letters__icontains=query)
         else:
-            # クエリが空白の場合はすべてのコーヒー豆を返す
-            return Bean.objects.all()
+            # クエリが空白の場合はローストレベルの昇順にソートしてすべてのコーヒー豆を返す
+            return Bean.objects.order_by('roast')
             
     
     

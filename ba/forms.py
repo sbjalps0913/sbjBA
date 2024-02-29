@@ -14,7 +14,8 @@ class RegisterForm(UserCreationForm):
     
 # 問題解答フォーム
 class AnswerQuestionForm(forms.Form):
-    answer = forms.ChoiceField(widget=forms.RadioSelect)
+    #answer = forms.ChoiceField(widget=forms.RadioSelect)
+    answer = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple)
 
     def __init__(self, question, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -41,7 +42,7 @@ class OptionForm(forms.ModelForm):
 class CreateQuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ['text', 'explanation']
+        fields = ['text', 'explanation', 'is_multi']
         
     option1 = OptionForm(prefix='option1')
     option2 = OptionForm(prefix='option2')

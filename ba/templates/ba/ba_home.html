@@ -5,12 +5,24 @@
 {% block main %}
   	<div class="container mt-5">
     	<h2>ホーム</h2>
-    	<ul>
-	    	<li><a href="{% url 'ba:questionset_list' %}">問題集</a></li>
-	    	<br><br>
-	    	<li><a href="{% url 'ba:result_list' %}">自分のテスト結果</a></li>
-	    	<br><br>
-	    	<li><a href="{% url 'ba:user_bean_list' %}">コーヒー豆</a></li>
-    	</u;>
+		<div class="button_line1">
+    		<a href="{% url 'ba:questionset_list' %}">問題集</a>
+    	</div>
+    	
+    	<br><br>
+    	<div class="button_line1">
+    		<a href="{% url 'ba:question_list' %}">すべての問題を見る</a>
+    	</div>
+
+    	<br><br>
+    	<div class="button_line1">
+    		<a href="{% url 'ba:result_list' %}">自分のテスト結果</a>
+    	</div>
+    	
+    	<br><br>
+    	<div class="button_line1">
+    		<a href="{% url 'ba:user_bean_list' %}">コーヒーパスポート</a>
+    	</div>
+    	
   	</div>
 {% endblock %}

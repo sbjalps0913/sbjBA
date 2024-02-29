@@ -5,20 +5,49 @@
 {% block main %}
 	<div class="container mt-5">
 	    <h2>結果</h2>
-	    <p>問題集：{{ score.question_set }}</p>
-	    <p>解答日時：{{ score.date }}</p>
-	    <p>回数：{{ score.times }}回目</p>
-	    <p>問題数：{{ question_count }}</p>
-	    <p>正解数：{{ score.score }}</p>
 	    
 	    <div style="width: 300px; height: 300px;">
 	    	<canvas id="myChart" width="400" height="400"></canvas>
 	    </div>
+	    <br>
+	    
+	    <p><strong>問題集：</strong>{{ score.question_set }}</p>
+	    <p><strong>解答日時：</strong>{{ score.date }}</p>
+	    <p><strong>回数：</strong>{{ score.times }}回目</p>
+	    <p><strong>問題数：</strong>{{ question_count }}</p>
+	    <p><strong>正解数：</strong>{{ score.score }}</p>
+	    <p><strong>得点：</strong><span style="font-size: 30px; color: #3cb371;">{{ rate }}</span></p>
+	    
+	    <h3>各問題の正誤</h3>
+        <ol>
+            {% for question, result_info in question_results.items %}
+                <li>
+                	{% if result_info.correct_flag %}
+		                <span style="color: green;">&#10004;</span> ：{{ question }}
+		            {% else %}
+		                <span style="color: red;">&#10006;</span> ：{{ question }}
+		            {% endif %}
+                </li>
+            {% endfor %}
+        </ol>
 	    
 	    <br><br>
-	    <a href="{% url 'ba:result_list' %}" class="btn btn-secondary">テスト結果一覧</a>
+	    <div class="button_line0021">
+        	<a href="{% url 'ba:start_question' pk=score.question_set.pk %}">もう1度解く</a>
+	    </div>
+	    
 	    <br><br>
-	    <a href="{% url 'ba:questionset_list' %}" class="btn btn-secondary">問題集一覧</a>
+	    <div class="button_line002">
+	    	<a href="{% url 'ba:result_list' %}">テスト結果一覧</a>
+	    </div>
+	    
+	    <br><br>
+	    <div class="button_line002">
+	    	<a href="{% url 'ba:questionset_list' %}">問題集一覧</a>
+	    </div>
+	    
+	    
+	    <br><br>
 	</div>
 	
 	<script>

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BeanSearchView, BeanListView, BeanDetailView, ResultView, ResultListView, AnswerQuestionView, QuestionDetailView, StartQuestionView, StartView, LoginView, LogoutView, HomeView, RegisterView, QuestionSetListView
+from .views import DeleteResultView, QuestionDetailView2, QuestionListView, BeanSearchView, BeanListView, BeanDetailView, ResultView, ResultListView, AnswerQuestionView, QuestionDetailView, StartQuestionView, StartView, LoginView, LogoutView, HomeView, RegisterView, QuestionSetListView
 from .views import DeleteQuestionSetView, DeleteQuestionView, UpdateOptionView, UpdateQuestionView, UpdateQuestionSetView, ManagerQuestionDetailView, QuestionSetDetailView, CreateQuestionView, LoginManagerView, HomeManagerView, CreateQuestionSetView, ManagerQuestionSetListView
 from .views import ManagerBeanListView, CreateBeanView, ManagerBeanDetailView, UpdateBeanView, DeleteBeanView
 
@@ -16,9 +16,12 @@ urlpatterns = [
     path('question_set/list/', QuestionSetListView.as_view(), name='questionset_list'),
     path('question_set/<int:pk>/start/', StartQuestionView.as_view(), name='start_question'),
     path('question/<int:pk>/detail/', QuestionDetailView.as_view(), name='user_question_detail'),
+    path('question/<int:pk>/detail2/', QuestionDetailView2.as_view(), name='user_question_detail2'),
     path('question/<int:pk>/answer/', AnswerQuestionView.as_view(), name='answer_question'),
+    path('question/list/', QuestionListView.as_view(), name='question_list'),
     path('result/<int:pk>/', ResultView.as_view(), name='result'),
     path('result/list/', ResultListView.as_view(), name='result_list'),
+    path('result/delete/', DeleteResultView.as_view(), name='delete_result'),
     
     path('beans/list/', BeanListView.as_view(), name='user_bean_list'),
     path('beans_detail/<int:pk>/', BeanDetailView.as_view(), name='user_bean_detail'),

@@ -1,10 +1,563 @@
 
 # 背景色
 body {
-    background-color: #EEEEEE;
+    background-color: #f0f0f0;
 }
 
-.my-custom-style {
-    color: red;
-    font-size: 18px;
+.green {
+	color: green;
+	font-size: 20px;
 }
+
+.red {
+    color: red;
+    font-size: 20px;
+}
+
+/* ○と×のスタイル */
+li span {
+    font-size: 20px;
+    margin-right: 0px; /* ○と×の間隔を調整 */
+}
+
+# 解答の正誤による色の変化
+.correct-answer {
+    color: green; /* 正解の場合の文字色 */
+    font-size: 25px;
+}
+
+.incorrect-answer {
+    color: red; /* 不正解の場合の文字色 */
+    font-size: 25px;
+}
+
+
+# リンク
+.custom-link {
+	color: black;
+}
+.custom-link:hover {
+	color: black;
+    text-decoration: underline; /* カーソルがリンク上にあるときに下線を表示 */
+}
+.custom-link:not(:hover) {
+	color: black;
+    text-decoration: none;	/* カーソルがリンク外のときは下線を非表示 */
+}
+
+
+/* 偶数行の背景色を設定 */
+.table-striped tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* 奇数行の背景色を設定 */
+.table-striped tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+
+# メニュー選択
+.button_line1 {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+
+.button_line1 a {
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 200px;
+    padding: 10px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 600;
+    text-decoration: none; /* リンクの下線を削除 */
+}
+.button_line1 a:before {
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: rgba(0,0,0,.1);
+    transform: translateX(-50%);
+}
+.button_line1 a:after {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: #000;
+    transform: scale(0, 1);
+    transform-origin: left top;
+    transition: transform .3s;
+}
+.button_line1 a:hover {
+    opacity: 0.7;
+}
+.button_line1 a:hover:after {
+    transform: scale(1, 1);
+}
+
+
+# 「戻る」など
+.button_line006 {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+
+.button_line006 a {
+    position: relative; /* 相対位置指定 */
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    padding: 10px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 600;
+    text-decoration: none; /* リンクの下線を削除 */
+}
+
+.button_line006 a:before,
+.button_line006 a:after {
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    content: '';
+    transition: all .3s;
+    background: #000;
+}
+
+.button_line006 a:before {
+    top: 0;
+    left: 0;
+}
+
+.button_line006 a:after {
+    bottom: 0; /* 下部に線を配置 */
+    right: 0;
+}
+
+.button_line006 a:hover:before,
+.button_line006 a:hover:after {
+    width: 0;
+}
+
+
+# 「スタート」ボタン
+.button_line004 {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+
+.button_line004 button {
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 200px;
+    padding: 10px 25px;
+    color: #000;
+    transition: 0.3s ease-in-out;
+    font-weight: 600;
+    border: none;
+    cursor: pointer; /* ボタンのカーソルをポインターに変更 */
+    background: transparent; /* ボタンの背景色を透明に設定 */
+}
+.button_line004 button:before,
+.button_line004 button:after {
+	content: '';
+	width: 18px;
+	height: 18px;
+	border-color: #313131;
+	box-sizing: border-box;
+	border-style :solid;
+	display: block;
+	position: absolute;
+	transition: all 0.3s ease-in-out;
+}
+.button_line004 button:before {
+	top: -6px;
+	left: -6px;
+	border-width: 2px 0 0 2px;
+	z-index: 5;
+}
+.button_line004 button:after {
+	bottom: -6px;
+	right: -6px;
+	border-width: 0 2px 2px 0;
+}
+.button_line004 button:hover:before,
+.button_line004 button:hover:after {
+	width: calc(100% + 12px);
+	height: calc(100% + 12px);
+	border-color: #313131;
+}
+.button_line004 button:hover {
+	color: #fff;
+	background-color: #313131;
+	border-color: #313131;
+}
+
+
+# 「問題集を解く」ボタン
+.button_line0021 {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_line0021 a {
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 200px;
+    padding: 10px 25px;
+    color: #000;
+    transition: 0.3s ease-in-out;
+    font-weight: 600;
+    text-decoration: none; /* リンクの下線を削除 */
+}
+.button_line0021 a:before {
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 3px;
+    top: 100%;
+    left: 0;
+    border-radius: 3px;
+    background: #8fbc8f;
+    transition: .2s;
+}
+.button_line0021 a:hover:before {
+    top: calc(100% - 2px);
+}
+
+
+# テスト結果画面における画面遷移
+.button_line002 {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_line002 a {
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 200px;
+    padding: 10px 25px;
+    color: #000;
+    transition: 0.3s ease-in-out;
+    font-weight: 600;
+    text-decoration: none; /* リンクの下線を削除 */
+}
+.button_line002 a:before {
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 3px;
+    top: 100%;
+    left: 0;
+    border-radius: 3px;
+    background: #000;
+    transition: .2s;
+}
+.button_line002 a:hover:before {
+    top: calc(100% - 2px);
+}
+
+
+
+# 「解答する」ボタン
+.button_answer {
+    position: relative;
+    display: inline-block;
+    margin-left: 50px;
+}
+
+.button_answer button {
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 240px;
+    padding: 10px 25px;
+    color: #fff; /* ホバー前の文字色を白に設定 */
+    background-color: #313131; /* ホバー前の背景色を黒に設定 */
+    transition: 0.3s ease-in-out;
+    font-weight: 500;
+    border: none;
+}
+
+.button_answer button:hover {
+    color: #000; /* ホバー後の文字色を黒に設定 */
+    background-color: transparent; /* ホバー後の背景色を白に設定 */
+}
+
+.button_answer button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: transparent; /* ボタンの背景色を透明に設定 */
+    transition: all 0.3s;
+}
+
+.button_answer button:hover::before {
+    opacity: 0;
+    transform: scale(0.4, 0.4);
+}
+
+.button_answer button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0;
+    transition: all 0.3s;
+    border: 2px solid #000;
+    transform: scale(1.2, 1.2);
+}
+
+.button_answer button:hover::after {
+    opacity: 1;
+    transform: scale(1, 1);
+}
+
+
+# 「次に進む」ボタン
+.button_next {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_next a {
+    background: #dcdcdc;
+    border-radius: 50px;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 260px;
+    padding: 10px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 500;
+    text-decoration: none; /* リンクの下線を削除 */
+}
+.button_next a:hover {
+    background: #313131;
+    color: #FFF;
+}
+.button_next a:after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-top: 3px solid #313131;
+    border-right: 3px solid #313131;
+    transform: rotate(45deg) translateY(-50%);
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    border-radius: 1px;
+    transition: 0.3s ease-in-out;
+}
+.button_next a:hover:after {
+    border-color: #FFF;
+}
+
+
+# 「終了する」ボタン
+.button_finish {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_finish a {
+    background: #dcdcdc;
+    border-radius: 50px;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 260px;
+    padding: 10px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 500;
+    text-decoration: none; /* リンクの下線を削除 */
+}
+.button_finish a:hover {
+    background: #313131;
+    color: #FFF;
+}
+
+
+# 問題集一覧画面における問題集のボタン
+.button_questionset {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_questionset a {
+    background: #eee;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 240px;
+    padding: 10px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 500;
+    z-index:0;
+    border-left: solid 5px #313131;
+    text-decoration: none; /* リンクの下線を削除 */
+}
+.button_questionset a:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    display: block;
+    background: #313131;
+    transition: .3s;
+    left:0;
+}
+.button_questionset a:hover {
+    color: #FFF;
+}
+.button_questionset a:hover:before {
+    width: 100%;
+    z-index: -1;
+}
+
+
+# 「詳細を見る」ボタン
+.button_detail {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+}
+.button_detail a {
+    background: #eee;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 220px;
+    padding: 5px 25px;
+    color: #313131;
+    transition: 0.3s ease-in-out;
+    font-weight: 500;
+    transform: skew(-10deg, 0deg);
+    text-decoration: none; /* リンクの下線を削除 */
+}
+.button_detail a span {
+    transform: skewX(10deg);
+}
+.button_detail a:before {
+    content: "";
+    width: 35px;
+    height: 2px;
+    position: absolute;
+    right: -20px;
+    background: #313131;
+    top: 35%;
+    transition: 0.3s ease-in-out;
+}
+.button_detail a:after {
+    content: "";
+    width: 20px;
+    height: 2px;
+    position: absolute;
+    right: -5px;
+    background: #313131;
+    top: 55%;
+    transition: 0.3s ease-in-out;
+}
+.button_detail a:hover:before, 
+.button_detail a:hover:after {
+    transform: translateX(5px);
+}
+
+
+# 「問題を表示」ボタン
+.button_show {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_show  button {
+    background: #d3d3d3;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 240px;
+    padding: 10px 25px;
+    color: #000;
+    transition: 0.3s ease-in-out;
+    //clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+}
+.button_show button:hover {
+    background: #313131;
+    color: #FFF;
+}
+
+
+# 「テスト結果の削除」ボタン
+.button_delete {
+    position: relative;
+    display: inline-block; /* ボタンをブロック要素として表示 */
+    margin-left: 50px; /* 左マージンを追加 */
+}
+.button_delete button {
+    background: #313131;
+    border-radius: 50px;
+    position: relative;
+    display: inline-block;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 260px;
+    padding: 10px 25px;
+    color: #fff;
+    transition: 0.1s ease-in-out;
+    font-weight: 500;
+    border: none;
+}
+.button_delete button:hover {
+    background: #ff4500;
+    color: #FFF;
+}
+
+
+
+
+
+
+

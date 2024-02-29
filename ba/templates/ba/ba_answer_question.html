@@ -4,45 +4,77 @@
 
 {% block main %}
   	<div class="container mt-5">
-    	<h2>問題{{ current_question_number }}: {{ question.text }}</h2>
+    	<h2>問題{{ current_question_number }}</h2>
+    	<p><span style="font-size: 18px">{{ question.text }}</span></p>
     	<form method="post">
       		{% csrf_token %}
       		{% for option in options %}
-        		<input type="radio" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
+        		{% if question.is_multi %}
+		            <input type="checkbox" style="accent-color: #000;" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
+		        {% else %}
+		            <input type="radio" id="option_{{ option.id }}" name="answer" value="{{ option.id }}">
+		        {% endif %}
         		<label for="option_{{ option.id }}">{{ option.text }}</label><br>
       		{% endfor %}
       		<br>
       		{% if not result %}
-      			<button type="submit" class="btn btn-outline-success">解答する</button>
+      			<div class="button_answer">
+      				<button type="submit">解答する</button>
+      			</div>
       		{% endif %}
     	</form>
     	
     	<br><br>
     	{% if result %}
-      		<p>{{ result }}</p>
-      		<p>現在の得点: {{ score }}</p>
+    		{% if is_correct %}
+    			<p style="color: green; font-size: 25px;">{{ result }}</p>
+    		{% else %}
+    			<p class="incorrect-answer">{{ result }}</p>
+    		{% endif %}
+    		
+      		<p>現在の正解数： {{ score }} / {{ current_question_number }}</p>
       		<br>
       		<h4>正解</h4>
-      		<p>{{ correct_option }}</p>
+      		<span style="color: #ff6347; font-size: 20px;">
+	      		<ul>
+				    {% for option in correct_options %}
+				      	<li>{{ option.text }}</li>
+				    {% endfor %}
+				</ul>
+			</span>
       		<br>
-      		<p>あなたの解答：{{ selected_option }}</p>
+      		
+      		<span style="color: #a9a9a9; font-size: 13px;">
+	      		<p>あなたの解答：</p>
+	      		<ul>
+			        {% for option in selected_options %}
+			            <li>{{ option.text }}</li>
+			        {% endfor %}
+			    </ul>
+		    </span>
       		
       		<h4>解説</h4>
       		<p>{{ question.explanation }}</p>
-    	{% endif %}
     	
-    	<br>
-
-		{% if not is_last_question %}
-			{% if next_question_id %}
-		        <a href="{% url 'ba:answer_question' pk=next_question_id %}" class="btn btn-primary">次の問題に進む</a>
-		    {% endif %}
-		{% else %}
-		    {% if final_score %}
-                <a href="{% url 'ba:result' final_score.pk %}" class="btn btn-primary">終了する</a>
-            {% else %}
-                <button type="button" class="btn btn-secondary">終了する</button>
-            {% endif %}
+    	
+	    	<br>
+	
+			{% if not is_last_question %}
+				{% if next_question_id %}
+					<div class="button_next">
+			        	<a href="{% url 'ba:answer_question' pk=next_question_id %}">次の問題</a>
+			        </div>
+			    {% endif %}
+			{% else %}
+			    {% if final_score %}
+			    	<div class="button_finish">
+	                	<a href="{% url 'ba:result' final_score.pk %}">終了する</a>
+	                </div>
+	            {% else %}
+	                
+	            {% endif %}
+			{% endif %}
+		
 		{% endif %}
 
         <br><br>

@@ -3,12 +3,24 @@
 {% block title %} 新規登録 {% endblock %}
 
 {% block main %}
-  <h2>新規登録</h2>
-  <form method="post" action="{% url 'ba:register' %}">
-    {% csrf_token %}
-    
-    {{ form.as_p }}
-    
-    <button type="submit">登録</button>
-  </form>
+	<div class="container mt-5">
+	  	<h2>新規登録</h2>
+	  	<form method="post" action="{% url 'ba:register' %}">
+	    	{% csrf_token %}
+	    
+	    	{{ form.as_p }}
+	    
+	    	<br><br>
+	    	<div class="button_line004">
+	    		<button type="submit">登録</button>
+	    	</div>
+	    	
+	    	<br><br>
+	    	<div class="button_line006">
+		  		<a href="{% url 'ba:login' %}">戻る</a>
+		  	</div>
+	  	</form>
+	  	
+	  	<br><br>
+  	<div>
 {% endblock %}

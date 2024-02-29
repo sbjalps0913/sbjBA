@@ -21,6 +21,7 @@ class Question(models.Model):
     question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)     # 属する問題集
     text = models.TextField()
     explanation = models.TextField(blank=True, null=True)   # 解説
+    is_multi = models.BooleanField(default=False)   # 複数問題か否か
     
     def __str__(self):
         return self.text
@@ -74,9 +75,22 @@ class FinalScore(models.Model):
     score = models.IntegerField(default=0)
     times = models.IntegerField(default=0)  # 問題集を解いた回数
     date = models.DateTimeField(auto_now_add=True)  # 解答終了日時
+    rate = models.IntegerField(default=0.0)   # 得点率
 
     def __str__(self):
         return f"{self.user.username}'s score for {self.question_set}:{self.times}回目 [{self.score}] 受験日{self.date}"
+
+
+# 解答
+class Answer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    selected_options = models.ManyToManyField(Option)  # 複数の選択肢を保存するフィールド
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        selected_option_texts = ", ".join(option.text for option in self.selected_options.all())
+        return f'{self.user.username}の解答: {selected_option_texts} ({self.question.text})'
 
 
 # コーヒー豆

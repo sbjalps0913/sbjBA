@@ -8,19 +8,94 @@
     	<p>{{ question_set.description }}</p>
     	<form method="post">
     		{% csrf_token %}
-    		<button type="submit" class="btn btn-outline-success">スタート</button>
+    		<div class="button_line004">
+    			<button type="submit">スタート</button>
+    		</div>
     	</form>
     	
     	<br><br>
-    	<h3>問題</h3>
-    	<ul>
-    		{% for question in questions %}
-    			<li><a href="{% url 'ba:user_question_detail' question.pk %}">{{ question.text }}</a></li>
-    		{% endfor %}
-    	</ul>
+    	<div class="button_show">
+    		<button id="toggleQuestionsButton">問題を表示</button>
+    	</div>
+    	<br><br>
+    	<div id="questionList" style="display: none;">
+	    	<h3>問題</h3>
+	    	<ol>
+	    		{% for question in questions %}
+	    			<li><a href="{% url 'ba:user_question_detail' question.pk %}" class="custom-link">{{ question.text }}</a></li>
+	    		{% endfor %}
+	    	</ol>
+    	</div>
+    	
+    	<br>
+    	<div class="button_show">
+    		<button id="toggleResultsButton">過去のテスト結果を表示</button>
+    	</div>
+    	<br><br>
+    	<div id="resultList" style="display: none;">
+	    	<h3>過去のテスト結果</h3>
+	    	<p>得点が80点以上のものは<span style="color: #228b22; font-size: 20px;">緑色</span>、30点以下のものは<span style="color: red; font-size: 20px;">赤色</span>で表示されます</p>
+	    	<table class="table" border="1">
+	            <thead>
+	                <tr>
+	                    <th>受験日時</th>
+	                    <th>得点</th>
+	                    <th></th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                {% for result in past_results %}
+	                    <tr>
+	                        <td>{{ result.date }}</td>
+	                        <td {% if result.rate <= 30 %}style="color: red;" {% elif result.rate >= 80 %}style="color: #228b22; font-size: 18px;" {% endif %}>
+							    {{ result.rate }}
+							</td>
+	                        <td>
+	                        	<div class="button_detail">
+	                        		<a href="{% url 'ba:result' pk=result.pk %}">詳細を見る</a>
+	                        	</div>
+	                        </td>
+	                    </tr>
+	                {% empty %}
+	                    <tr>
+	                        <td colspan="3">過去の試験結果はありません。</td>
+	                    </tr>
+	                {% endfor %}
+	            </tbody>
+	        </table>
+        </div>
     	
     	<br><br>
-    	<a href="{% url 'ba:questionset_list' %}" class="btn btn-secondary">戻る</a>
+    	<div class="button_line006">
+    		<a href="{% url 'ba:questionset_list' %}">戻る</a>
+    	</div>
     	<br><br>
   	</div>
+  	
+  	<script>
+  		const toggleQuestionsButton = document.getElementById('toggleQuestionsButton');
+  		const toggleResultsButton = document.getElementById('toggleResultsButton');
+  		const questionList = document.getElementById('questionList');
+  		const resultList = document.getElementById('resultList');
+  		
+  		toggleQuestionsButton.addEventListener('click', function() {
+  			if (questionList.style.display === 'none') {
+  				questionList.style.display = 'block';
+  				toggleQuestionsButton.textContent = '問題の非表示';
+  			} else {
+  				questionList.style.display = 'none';
+  				toggleQuestionsButton.textContent = '問題を表示';
+  			}
+  		});
+  		
+  		toggleResultsButton.addEventListener('click', function() {
+  			if (resultList.style.display === 'none') {
+  				resultList.style.display = 'block';
+  				toggleResultsButton.textContent = '過去のテスト結果を非表示';
+  			} else {
+  				resultList.style.display = 'none';
+  				toggleResultsButton.textContent = '過去のテスト結果を表示';
+  			}
+  		});
+  	</script>
 {% endblock %}
