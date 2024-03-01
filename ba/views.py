@@ -380,6 +380,37 @@ class ResultListView(LoginRequiredMixin, ListView):
     template_name = 'ba/ba_result_list.html'
     context_object_name = 'scores'
     
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        question_sets = self.request.GET.getlist('question_sets')
+        min_score = self.request.GET.get('min_score')
+
+        if question_sets:
+            queryset = queryset.filter(question_set_id__in=question_sets)
+        if min_score:
+            queryset = queryset.filter(rate__gte=min_score)
+
+        return queryset
+    
+    '''
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        question_set_id = self.request.GET.get('question_set')
+        min_score = self.request.GET.get('min_score')
+
+        if question_set_id:
+            queryset = queryset.filter(question_set_id=question_set_id)
+        if min_score:
+            queryset = queryset.filter(rate__gte=min_score)
+
+        return queryset
+    '''
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question_sets'] = QuestionSet.objects.all()
+        
+        return context
     
 # スコア結果削除確認画面
 class DeleteResultView(View):
