@@ -4,7 +4,6 @@
 
 {% block main %}
     <div class="container mt-5">
-        <h2>テスト結果</h2>
         <p>得点が80点以上のものは<span style="color: #228b22; font-size: 20px;">緑色</span>、30点以下のものは<span style="color: red; font-size: 20px;">赤色</span>で表示されます</p>
         
         <form id="deleteForm" method="post" action="{% url 'ba:delete_result' %}">

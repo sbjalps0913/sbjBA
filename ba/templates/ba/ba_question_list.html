@@ -4,8 +4,8 @@
 
 {% block main %}
   	<div class="container mt-5">
-    	<h2>問題一覧</h2>
     	
+    	<!--
     	<form method="get" action="{% url 'ba:question_list' %}">
     		<div class="input-group mb-3">
 			    <input type="text" name="q" class="form-control" placeholder="検索したい問題を入力">
@@ -13,6 +13,38 @@
 			    	<button type="submit" class="btn btn-outline-dark">検索</button>
 			    </div>
 		    </div>
+		</form>
+		
+		<form method="get" action="{% url 'ba:question_list' %}">
+            {% for question_set in question_sets %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="question_sets" value="{{ question_set.id }}" id="question_set_{{ question_set.id }}">
+                    <label class="form-check-label" for="question_set_{{ question_set.id }}">
+                        {{ question_set.title }}
+                    </label>
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">問題絞り込み</button>
+        </form>
+        -->
+        
+        <form method="get" action="{% url 'ba:question_list' %}">
+		    <div class="input-group mb-3">
+		        <input type="text" name="q" class="form-control" placeholder="検索したい問題を入力">
+		    </div>
+		    {% for question_set in question_sets %}
+		        <div class="form-check">
+		            <input class="form-check-input" type="checkbox" name="question_sets" value="{{ question_set.id }}" id="question_set_{{ question_set.id }}">
+		            <label class="form-check-label" for="question_set_{{ question_set.id }}">
+		                {{ question_set.title }}
+		            </label>
+		        </div>
+		    {% endfor %}
+		    
+		    <br>
+		    <div class="input-group-append">
+	            <button type="submit" class="btn btn-outline-dark">検索</button>
+	        </div>
 		</form>
     	
     	<br>

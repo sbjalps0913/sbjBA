@@ -8,13 +8,14 @@
     	{#<p>問題文: {{ object.text }}</p>#}
     	<p><strong>解説:</strong> {{ object.explanation }}</p>
     	
-    	<h3>選択肢</h3>
+    	<br><br>
+    	<h5>選択肢</h5>
     	{% if question.is_multi %}
 	    	<p>（複数選択問題）</p>
 	    {% endif %}
     	<ul>
     		{% for option in object.option_set.all %}
-    			<li>{{ option.text }} {% if option.is_correct %}(正解){% endif %}</li>
+    			<li {% if option.is_correct %} style="color: red;" {% endif %}>{{ option.text }} {% if option.is_correct %}(正解){% endif %}</li>
     		{% endfor %}
     	</ul>
 		

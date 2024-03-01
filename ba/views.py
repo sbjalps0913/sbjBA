@@ -452,23 +452,37 @@ class QuestionListView(LoginRequiredMixin, ListView):
     context_object_name = 'questions'
     paginate_by = 25    # 1ページ当たりに表示される項目数
     
-    '''
     def get_queryset(self):
         query = self.request.GET.get('q')
-        if query:
-            return Question.objects.filter(text__icontains=query)
-        else:
-            return Question.objects.all()
-    '''
-    
-    def get_queryset(self):
-        query = self.request.GET.get('q')
+        selected_question_sets = self.request.GET.getlist('question_sets')  # 選択された問題集のIDを取得
         
+        # 問題集の絞り込みの入力をセッションに保存
+        self.request.session['selected_question_sets'] = selected_question_sets
+        
+        queryset = Question.objects.all()
+        
+        if query or selected_question_sets:
+            # 検索クエリと選択された問題集の両方がある場合
+            if query:
+                queryset = queryset.filter(text__icontains=query)
+            
+            if selected_question_sets:
+                queryset = queryset.filter(question_set__id__in=selected_question_sets)
+        else:
+            # 問題集の選択も検索クエリもない場合は全ての問題を表示
+            queryset = Question.objects.all()
+        
+        '''
         if query:  # 検索クエリがある場合
             # 問題文または問題集名にクエリが含まれる問題をフィルタリング
             queryset = Question.objects.filter(text__icontains=query)
         else:  # 検索クエリがない場合は全ての問題を表示
             queryset = Question.objects.all()
+            
+        if selected_question_sets:
+            # 選択された問題集に基づいて絞り込む
+            queryset = queryset.filter(question_set_id__in=selected_question_sets)
+        '''
         
         # 問題集ごとにグループ化し、それぞれのグループ内で問題をソート
         question_sets = QuestionSet.objects.all()
@@ -479,6 +493,15 @@ class QuestionListView(LoginRequiredMixin, ListView):
             sorted_questions.extend(questions)
 
         return sorted_questions
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question_sets'] = QuestionSet.objects.all()
+        
+        # 現在の選択された問題集をコンテキストに追加
+        context['selected_question_sets'] = self.request.session.get('selected_question_sets', [])
+        
+        return context
     
 
     
