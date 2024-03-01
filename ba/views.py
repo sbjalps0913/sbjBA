@@ -12,7 +12,7 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
-import json
+import json, datetime
 from django.http import JsonResponse
 
 from .models import UserProfile, QuestionSet, Question, Option, Bean, Score, FinalScore, Answer
@@ -153,6 +153,7 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
     def dispatch(self, request, *args, **kwargs):
         self.question = get_object_or_404(Question, pk=kwargs['pk'])
         self.question_set = self.question.question_set
+        
         return super().dispatch(request, *args, **kwargs)
     
     def get_form_kwargs(self):

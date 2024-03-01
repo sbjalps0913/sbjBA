@@ -4,6 +4,9 @@
 
 {% block main %}
   	<div class="container mt-5">
+  		<!-- 経過時間の表示 -->
+		<p id="elapsed-time"></p>
+    	
     	<h2>問題{{ current_question_number }}</h2>
     	<p><span style="font-size: 18px">{{ question.text }}</span></p>
     	<form method="post">
@@ -79,4 +82,33 @@
 
         <br><br>
   	</div>
+  	
+  	<script>
+        // 開始時間を取得
+        var startTime = localStorage.getItem('startTime');
+        if (!startTime) {
+            startTime = new Date().getTime();
+            localStorage.setItem('startTime', startTime);
+        }
+
+        // 経過時間を更新する関数
+        function updateElapsedTime() {
+            var currentTime = new Date().getTime();
+            var elapsedTime = currentTime - parseInt(startTime);
+            var minutes = Math.floor(elapsedTime / (1000 * 60));
+            var seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+            document.getElementById('elapsed-time').innerText = '経過時間：' + minutes + '分 ' + seconds + '秒';
+        }
+
+        // ページ読み込み時に経過時間を更新
+        updateElapsedTime();
+
+        // 1秒ごとに経過時間を更新
+        setInterval(updateElapsedTime, 1000);
+
+        // フォーム送信時に経過時間をリセット
+        document.getElementById('answer-form').addEventListener('submit', function() {
+            localStorage.removeItem('startTime');
+        });
+    </script>
 {% endblock %}
