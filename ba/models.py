@@ -63,6 +63,7 @@ class Score(models.Model):
     times = models.IntegerField(default=0)  # 問題集を解いた回数
     date = models.DateTimeField(auto_now_add=True)  # 解答終了日時
     count = models.IntegerField(default=0)  # 解答した問題数
+    elapsed_time = models.DateTimeField(null=True, blank=True)  # 問題解答の開始時間
 
     def __str__(self):
         return f"{self.user.username}'s score for {self.question_set}:{self.times}回目 スコア:{self.score} (受験日:{self.date})"

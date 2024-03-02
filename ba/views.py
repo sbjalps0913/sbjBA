@@ -104,7 +104,7 @@ class StartQuestionView(LoginRequiredMixin, DetailView):
             else:
                 times = 1
             # 新しいスコアオブジェクトを作成する
-            Score.objects.create(user=request.user, question_set=question_set, times=times)
+            Score.objects.create(user=request.user, question_set=question_set, times=times, elapsed_time=timezone.now())
             
             return redirect(reverse_lazy('ba:answer_question', kwargs={'pk': first_question.pk}))
         else:
@@ -177,6 +177,8 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
             context['correct_options'] = correct_options
         else:
             context['correct_options'] = '正解の選択肢がありません'
+            
+        context['elapsed_time'] = self.get_elapsed_time()
         
         return context
 
@@ -324,9 +326,19 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
                     question_set=question_set,
                     score=score.score,
                     times=previous_times+1,
-                    date=score.date
+                    date=score.date,
                 )
                 return final_score
+            
+    
+    # 問題の解答をスタートしてからの経過時間を求めるS
+    def get_elapsed_time(self):
+        # Scoreオブジェクトの開始時間を取得
+        start_time = self.get_current_score().elapsed_time
+        # 経過時間を計算
+        elapsed_time = timezone.now() - start_time
+        # 経過時間を秒に変換して返す
+        return elapsed_time.total_seconds()
             
 
 # スコア結果画面
