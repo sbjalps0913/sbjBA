@@ -314,6 +314,8 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
             question_set = QuestionSet.objects.get(pk=question_set_id)
             score = Score.objects.filter(user=self.request.user, question_set=question_set).order_by('-times').first()
             
+            # 現在の経過時間を取得
+            elapsed_time = self.calculate_elapsed_time()
         
             # 直前の受験回数を取得
             previous_final_score = FinalScore.objects.filter(user=self.request.user, question_set=self.question_set).order_by('-times').first()
@@ -327,6 +329,7 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
                     score=score.score,
                     times=previous_times+1,
                     date=score.date,
+                    elapsed_time=elapsed_time
                 )
                 return final_score
             
@@ -339,6 +342,16 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
         elapsed_time = timezone.now() - start_time
         # 経過時間を秒に変換して返す
         return elapsed_time.total_seconds()
+    
+    
+    # 解答終了時に所要時間を計測
+    def calculate_elapsed_time(self):
+        # 現在の経過時間を取得し、"mm:ss"形式の文字列として返す
+        elapsed_seconds = int(self.get_elapsed_time())
+        minutes = elapsed_seconds // 60
+        seconds = elapsed_seconds % 60
+        formatted_time = '{:02d}:{:02d}'.format(minutes, seconds)
+        return formatted_time
             
 
 # スコア結果画面

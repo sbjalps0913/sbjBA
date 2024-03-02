@@ -77,6 +77,7 @@ class FinalScore(models.Model):
     times = models.IntegerField(default=0)  # 問題集を解いた回数
     date = models.DateTimeField(auto_now_add=True)  # 解答終了日時
     rate = models.IntegerField(default=0.0)   # 得点率
+    elapsed_time = models.CharField(max_length=10, default='00:00')  # 経過時間を文字列で保存
 
     def __str__(self):
         return f"{self.user.username}'s score for {self.question_set}:{self.times}回目 [{self.score}] 受験日{self.date}"
