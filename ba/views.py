@@ -12,7 +12,7 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
-import json
+import json, datetime
 from django.http import JsonResponse
 
 from .models import UserProfile, QuestionSet, Question, Option, Bean, Score, FinalScore, Answer
@@ -104,7 +104,7 @@ class StartQuestionView(LoginRequiredMixin, DetailView):
             else:
                 times = 1
             # 新しいスコアオブジェクトを作成する
-            Score.objects.create(user=request.user, question_set=question_set, times=times)
+            Score.objects.create(user=request.user, question_set=question_set, times=times, elapsed_time=timezone.now())
             
             return redirect(reverse_lazy('ba:answer_question', kwargs={'pk': first_question.pk}))
         else:
@@ -153,6 +153,7 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
     def dispatch(self, request, *args, **kwargs):
         self.question = get_object_or_404(Question, pk=kwargs['pk'])
         self.question_set = self.question.question_set
+        
         return super().dispatch(request, *args, **kwargs)
     
     def get_form_kwargs(self):
@@ -176,6 +177,8 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
             context['correct_options'] = correct_options
         else:
             context['correct_options'] = '正解の選択肢がありません'
+            
+        context['elapsed_time'] = self.get_elapsed_time()
         
         return context
 
@@ -311,6 +314,8 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
             question_set = QuestionSet.objects.get(pk=question_set_id)
             score = Score.objects.filter(user=self.request.user, question_set=question_set).order_by('-times').first()
             
+            # 現在の経過時間を取得
+            elapsed_time = self.calculate_elapsed_time()
         
             # 直前の受験回数を取得
             previous_final_score = FinalScore.objects.filter(user=self.request.user, question_set=self.question_set).order_by('-times').first()
@@ -323,9 +328,30 @@ class AnswerQuestionView(LoginRequiredMixin, FormView):
                     question_set=question_set,
                     score=score.score,
                     times=previous_times+1,
-                    date=score.date
+                    date=score.date,
+                    elapsed_time=elapsed_time
                 )
                 return final_score
+            
+    
+    # 問題の解答をスタートしてからの経過時間を求めるS
+    def get_elapsed_time(self):
+        # Scoreオブジェクトの開始時間を取得
+        start_time = self.get_current_score().elapsed_time
+        # 経過時間を計算
+        elapsed_time = timezone.now() - start_time
+        # 経過時間を秒に変換して返す
+        return elapsed_time.total_seconds()
+    
+    
+    # 解答終了時に所要時間を計測
+    def calculate_elapsed_time(self):
+        # 現在の経過時間を取得し、"mm:ss"形式の文字列として返す
+        elapsed_seconds = int(self.get_elapsed_time())
+        minutes = elapsed_seconds // 60
+        seconds = elapsed_seconds % 60
+        formatted_time = '{:02d}:{:02d}'.format(minutes, seconds)
+        return formatted_time
             
 
 # スコア結果画面
@@ -380,6 +406,37 @@ class ResultListView(LoginRequiredMixin, ListView):
     template_name = 'ba/ba_result_list.html'
     context_object_name = 'scores'
     
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        question_sets = self.request.GET.getlist('question_sets')
+        min_score = self.request.GET.get('min_score')
+
+        if question_sets:
+            queryset = queryset.filter(question_set_id__in=question_sets)
+        if min_score:
+            queryset = queryset.filter(rate__gte=min_score)
+
+        return queryset
+    
+    '''
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        question_set_id = self.request.GET.get('question_set')
+        min_score = self.request.GET.get('min_score')
+
+        if question_set_id:
+            queryset = queryset.filter(question_set_id=question_set_id)
+        if min_score:
+            queryset = queryset.filter(rate__gte=min_score)
+
+        return queryset
+    '''
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question_sets'] = QuestionSet.objects.all()
+        
+        return context
     
 # スコア結果削除確認画面
 class DeleteResultView(View):
@@ -452,23 +509,37 @@ class QuestionListView(LoginRequiredMixin, ListView):
     context_object_name = 'questions'
     paginate_by = 25    # 1ページ当たりに表示される項目数
     
-    '''
     def get_queryset(self):
         query = self.request.GET.get('q')
-        if query:
-            return Question.objects.filter(text__icontains=query)
-        else:
-            return Question.objects.all()
-    '''
-    
-    def get_queryset(self):
-        query = self.request.GET.get('q')
+        selected_question_sets = self.request.GET.getlist('question_sets')  # 選択された問題集のIDを取得
         
+        # 問題集の絞り込みの入力をセッションに保存
+        self.request.session['selected_question_sets'] = selected_question_sets
+        
+        queryset = Question.objects.all()
+        
+        if query or selected_question_sets:
+            # 検索クエリと選択された問題集の両方がある場合
+            if query:
+                queryset = queryset.filter(text__icontains=query)
+            
+            if selected_question_sets:
+                queryset = queryset.filter(question_set__id__in=selected_question_sets)
+        else:
+            # 問題集の選択も検索クエリもない場合は全ての問題を表示
+            queryset = Question.objects.all()
+        
+        '''
         if query:  # 検索クエリがある場合
             # 問題文または問題集名にクエリが含まれる問題をフィルタリング
             queryset = Question.objects.filter(text__icontains=query)
         else:  # 検索クエリがない場合は全ての問題を表示
             queryset = Question.objects.all()
+            
+        if selected_question_sets:
+            # 選択された問題集に基づいて絞り込む
+            queryset = queryset.filter(question_set_id__in=selected_question_sets)
+        '''
         
         # 問題集ごとにグループ化し、それぞれのグループ内で問題をソート
         question_sets = QuestionSet.objects.all()
@@ -479,6 +550,15 @@ class QuestionListView(LoginRequiredMixin, ListView):
             sorted_questions.extend(questions)
 
         return sorted_questions
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question_sets'] = QuestionSet.objects.all()
+        
+        # 現在の選択された問題集をコンテキストに追加
+        context['selected_question_sets'] = self.request.session.get('selected_question_sets', [])
+        
+        return context
     
 
     

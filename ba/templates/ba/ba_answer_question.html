@@ -4,6 +4,9 @@
 
 {% block main %}
   	<div class="container mt-5">
+  		<!-- 経過時間の表示 -->
+        <p>経過時間: <span id="elapsed-time">00:00</span></p>
+    	
     	<h2>問題{{ current_question_number }}</h2>
     	<p><span style="font-size: 18px">{{ question.text }}</span></p>
     	<form method="post">
@@ -17,6 +20,8 @@
         		<label for="option_{{ option.id }}">{{ option.text }}</label><br>
       		{% endfor %}
       		<br>
+    		<!-- 経過時間を保存する隠しフィールド -->
+			<input type="hidden" id="elapsed-time-field" name="elapsed_time" value="{{ elapsed_time }}">
       		{% if not result %}
       			<div class="button_answer">
       				<button type="submit">解答する</button>
@@ -68,7 +73,7 @@
 			{% else %}
 			    {% if final_score %}
 			    	<div class="button_finish">
-	                	<a href="{% url 'ba:result' final_score.pk %}">終了する</a>
+	                	<a href="{% url 'ba:result' final_score.pk %}" id="finish-button">終了する</a>
 	                </div>
 	            {% else %}
 	                
@@ -79,4 +84,106 @@
 
         <br><br>
   	</div>
+  	
+  	<!--
+  	<script>
+	    // ページ読み込み時の処理
+	    document.addEventListener('DOMContentLoaded', function() {
+	        var startTime = localStorage.getItem('startTime');
+	        var intervalId;
+	
+	        // スタートボタンがクリックされたときの処理
+	        document.getElementById('start-button').addEventListener('click', function() {
+	            if (isNaN(parseInt(startTime))) {
+	                // 開始時間を設定してタイマーをスタート
+	                startTime = new Date().getTime();
+	                localStorage.setItem('startTime', startTime);
+	                startTimer();
+	            } else {
+	                // 開始時間をリセット
+	                startTime = NaN;
+	                localStorage.removeItem('startTime');
+	                // タイマーを停止
+	                clearInterval(intervalId);
+	                // ボタンの表示を変更
+	                document.getElementById('start-button').innerText = '時間をはかる';
+	                // 経過時間をリセット
+	                document.getElementById('elapsed-time').innerText = '';
+	            }
+	        });
+	
+	        // タイマーをスタートする関数
+	        function startTimer() {
+	            intervalId = setInterval(updateElapsedTime, 1000);
+	            document.getElementById('start-button').innerText = 'リセットする';
+	        }
+	
+	        // 経過時間を更新する関数
+	        function updateElapsedTime() {
+	            var currentTime = new Date().getTime();
+	            var elapsedTime = currentTime - parseInt(startTime);
+	            var minutes = Math.floor(elapsedTime / (1000 * 60));
+	            var seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+	            document.getElementById('elapsed-time').innerText = '経過時間：' + minutes + '分 ' + seconds + '秒';
+	        }
+	
+	        // 終了ボタンがクリックされたときの処理
+	        document.getElementById('finish-button').addEventListener('click', function() {
+	            // 開始時間をリセット
+	            startTime = NaN;
+	            localStorage.removeItem('startTime');
+	            // タイマーを停止
+	            clearInterval(intervalId);
+	            // 経過時間をリセット
+	            document.getElementById('elapsed-time').innerText = '';
+	        });
+	
+	        // ページ遷移をJavaScriptで行う
+	        document.querySelectorAll('.button_next a').forEach(function(button) {
+	            button.addEventListener('click', function(event) {
+	                // ページ遷移をキャンセル
+	                event.preventDefault();
+	                var nextUrl = this.getAttribute('href'); // 次の問題のURLを取得
+	                // ボタンの表示を設定
+	                if (isNaN(parseInt(startTime))) {
+	                    this.innerText = '計測をはじめる';
+	                } else {
+	                    this.innerText = 'リセットする';
+	                }
+	                // JavaScriptでページ遷移
+	                setTimeout(function() {
+	                    window.location.href = nextUrl;
+	                }, 500);
+	            });
+	        });
+	    });
+	</script>
+	-->
+
+	
+  	<script>
+	    // ページ読み込み時に経過時間の計測を開始
+		document.addEventListener('DOMContentLoaded', function() {
+		    // ページ読み込み時のサーバー側で計測されたelapsed_timeを取得
+		    var elapsedSeconds = parseInt("{{ elapsed_time }}"); // ページテンプレートからelapsed_timeを取得
+		
+		    // 開始時間を取得
+		    var startTime = new Date().getTime() - (elapsedSeconds * 1000); // 経過秒数をミリ秒に変換し、現在時刻から減算
+		
+		    // 1秒ごとに経過時間を更新して表示
+		    setInterval(function() {
+		        var currentTime = new Date().getTime();
+		        var elapsedTime = currentTime - startTime;
+		        displayElapsedTime(elapsedTime);
+		    }, 1000);
+		});
+		
+		function displayElapsedTime(elapsedTime) {
+		    var minutes = Math.floor(elapsedTime / 60000);
+		    var seconds = Math.floor((elapsedTime % 60000) / 1000);
+		    var formattedTime = ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+		    document.getElementById('elapsed-time').innerText = formattedTime;
+		}
+	</script>
+
 {% endblock %}
