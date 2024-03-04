@@ -15,13 +15,13 @@
     		</div>
   		</form>
 
-	  	
+	  	<p>「*」 ･･･ プロモーション</p>
 	  	
 		<ul class="list-group">
 			{% if beans %}
 			    {% for bean in beans %}
 				    <li class="list-group-item" style="background-color: {% if bean.roast == 1 %}#fffacd{% elif bean.roast == 2 %}#ffebcd{% elif bean.roast == 3 %}#f5deb3{% elif bean.roast == 4 %}#deb887{% elif bean.roast == 5 %}#f4a460{% elif bean.roast == 6 %}#cd853f{% endif %}">
-				      	<a href="{% url 'ba:user_bean_detail' bean.id %}" class="custom-link">{{ bean.name }}</a>
+				      	<a href="{% url 'ba:user_bean_detail' bean.id %}" class="custom-link">{{ bean.name }}{% if bean.is_promotion %}*{% endif %}</a>
 				    </li>
 			    {% endfor %}
 			{% else %}

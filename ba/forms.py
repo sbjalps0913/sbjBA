@@ -127,7 +127,7 @@ class UpdateBeanForm(forms.ModelForm):
 
     class Meta:
         model = Bean
-        fields = ['name', 'three_letters', 'roast', 'flavor', 'acidity', 'body', 'processing', 'region', 'complementary']
+        fields = ['is_promotion', 'name', 'three_letters', 'roast', 'flavor', 'acidity', 'body', 'processing', 'region', 'complementary']
         widgets = {
             'roast': forms.NumberInput(attrs={'min': 1, 'max': 6}),  # ローストレベルの範囲を指定
         }

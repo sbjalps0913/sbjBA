@@ -106,6 +106,7 @@ class Bean(models.Model):
     processing = models.CharField(max_length=100)   # 加工法
     region = models.CharField(max_length=100)   # 地域
     complementary = models.CharField(max_length=50)    # 相性の良い風味
+    is_promotion = models.BooleanField(default=False)  # 期間限定のコーヒー豆かどうか
 
     def __str__(self):
         return self.name    
