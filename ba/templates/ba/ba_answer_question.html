@@ -182,7 +182,15 @@
 		    var minutes = Math.floor(elapsedTime / 60000);
 		    var seconds = Math.floor((elapsedTime % 60000) / 1000);
 		    var formattedTime = ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
-		    document.getElementById('elapsed-time').innerText = formattedTime;
+		    var elapsedTimeElement = document.getElementById('elapsed-time');
+	        elapsedTimeElement.innerText = formattedTime;
+	
+	        // 経過時間が30分を超えた場合に赤色にする
+	        if (minutes >= 30) {
+	            elapsedTimeElement.style.color = 'red';
+	        } else {
+	            elapsedTimeElement.style.color = ''; // 赤色以外のスタイルを適用するために空文字列を設定
+	        }
 		}
 	</script>
 

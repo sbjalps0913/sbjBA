@@ -4,7 +4,7 @@
 
 {% block main %}
 	<div class="container mt-5">
-	  	<h2>{{ bean.name }}</h2>
+	  	<h2>{{ bean.name }} {% if bean.is_promotion %}[プロモーション]{% else %}[コア]{% endif %}</h2>
 	  	<ul>
 		    <li><strong>スリーレター:</strong> {{ bean.three_letters }}</li>
 		    <li><strong>ローストレベル:</strong> {{ bean.roast }}</li>
