@@ -100,7 +100,7 @@ class Bean(models.Model):
     name = models.CharField(max_length=20)
     three_letters = models.CharField(max_length=3)
     roast = models.IntegerField()  # ローストレベル
-    flavor = models.CharField(max_length=50)   # 風味
+    flavor = models.CharField(max_length=200)   # 風味
     acidity = models.CharField(max_length=100)  # 酸味
     body = models.CharField(max_length=100)     # コク
     processing = models.CharField(max_length=100)   # 加工法
